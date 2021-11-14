@@ -15,7 +15,7 @@ class AuthController extends ApiController
 {
 	/**
 	* @OA\Post(
-	*	path="/v1/auth/login",
+	*	path="/api/v1/auth/login",
 	*   tags={"Login"},
 	*   summary="Login",
 	*   description="Login for users",
@@ -72,7 +72,7 @@ class AuthController extends ApiController
             return response()->json(['code' => 422, 'status' => 'error', 'message' => 'The password is incorrect.'], 422);
         }
 
-		if ($user->state==0) {
+		if ($user->state=='0') {
 			return response()->json(['code' => 403, 'status' => 'error', 'message' => 'This user is not allowed to enter.'], 403);
 		}
 
@@ -96,7 +96,7 @@ class AuthController extends ApiController
 
 	/**
     * @OA\Post(
-    *	path="/v1/auth/register",
+    *	path="/api/v1/auth/register",
     *   tags={"Register"},
     *   summary="Register user",
     *   operationId="register",

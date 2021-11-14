@@ -180,7 +180,7 @@ class UserController extends ApiController
     * @OA\Get(
     *   path="/api/v1/users/{id}",
     *   tags={"Users"},
-    *   summary="Get users",
+    *   summary="Get user",
     *   description="Returns a single user",
     *   operationId="showUser",
     *   security={

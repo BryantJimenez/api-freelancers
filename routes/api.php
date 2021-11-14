@@ -56,8 +56,8 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::get('/{category:id}', 'Api\CategoryController@show')->middleware('permission:categories.show');
 			Route::put('/{category:id}', 'Api\CategoryController@update')->middleware('permission:categories.edit');
 			Route::delete('/{category:id}', 'Api\CategoryController@destroy')->middleware('permission:categories.delete');
-			Route::put('/{category:id}/activar', 'Api\CategoryController@activate')->middleware('permission:categories.active');
-			Route::put('/{category:id}/desactivar', 'Api\CategoryController@deactivate')->middleware('permission:categories.deactive');
+			Route::put('/{category:id}/activate', 'Api\CategoryController@activate')->middleware('permission:categories.active');
+			Route::put('/{category:id}/deactivate', 'Api\CategoryController@deactivate')->middleware('permission:categories.deactive');
 		});
 	});
 });
