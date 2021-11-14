@@ -13,19 +13,93 @@ use Auth;
 class ProfileController extends ApiController
 {
 	/**
-     * Display the specified resource.
-     */
+    *
+    * @OA\Get(
+    *   path="/api/v1/profile",
+    *   tags={"Profile"},
+    *   summary="Get profile",
+    *   description="Returns profile data",
+    *   operationId="getProfile",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Response(
+    *       response=200,
+    *       description="Get profile.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   )
+    * )
+    */
     public function get() {
     	$user=$this->dataUser(Auth::user());
     	return response()->json(['code' => 200, 'status' => 'success', 'data' => $user], 200);
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    *
+    * @OA\Put(
+    *   path="/api/v1/profile",
+    *   tags={"Profile"},
+    *   summary="Update user",
+    *   description="Update a profile data",
+    *   operationId="updateProfile",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="name",
+    *       in="query",
+    *       description="Name of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="lastname",
+    *       in="query",
+    *       description="Lastname of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="photo",
+    *       in="query",
+    *       description="Photo of user",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Update profile user.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=422,
+    *       description="Data not valid."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
+    */
     public function update(ApiProfileUpdateRequest $request) {
     	$user=Auth::user();
     	$data=array('name' => request('name'), 'lastname' => request('lastname'));
@@ -44,11 +118,55 @@ class ProfileController extends ApiController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    *
+    * @OA\Post(
+    *   path="/api/v1/profile/change/password",
+    *   tags={"Profile"},
+    *   summary="Update password user",
+    *   description="Update password of a user",
+    *   operationId="updateProfilePassword",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="current_password",
+    *       in="query",
+    *       description="Current password of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="new_password",
+    *       in="query",
+    *       description="New password of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Update password.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=422,
+    *       description="Data not valid."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
+    */
     public function changePassword(ApiProfilePasswordUpdateRequest $request) {
     	$user=Auth::user();
     	if (!Hash::check(request('current_password'), $user->password)) {
@@ -68,11 +186,55 @@ class ProfileController extends ApiController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    *
+    * @OA\Post(
+    *   path="/api/v1/profile/change/email",
+    *   tags={"Profile"},
+    *   summary="Update email user",
+    *   description="Update email of a user",
+    *   operationId="updateProfileEmail",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="current_email",
+    *       in="query",
+    *       description="Current email of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="new_email",
+    *       in="query",
+    *       description="New email of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Update email.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=422,
+    *       description="Data not valid."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
+    */
     public function changeEmail(ApiProfileEmailUpdateRequest $request) {
     	$user=Auth::user();
     	if (request('current_email')!=$user->email) {

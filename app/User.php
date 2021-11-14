@@ -61,7 +61,12 @@ class User extends Authenticatable
      */
     public function resolveRouteBinding($value, $field = null)
     {
-        return $this->with(['roles'])->where($field, $value)->firstOrFail();
+        $user=$this->with(['roles'])->where($field, $value)->first();
+        if (!is_null($user)) {
+            return $user;
+        }
+
+        return abort(404);
     }
 
     public function getSlugOptions() : SlugOptions

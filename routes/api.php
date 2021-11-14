@@ -42,22 +42,22 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::group(['prefix' => 'users'], function () {
 			Route::get('/', 'Api\User\UserController@index')->middleware('permission:users.index');
 			Route::post('/', 'Api\User\UserController@store')->middleware('permission:users.create');
-			Route::get('/{user:slug}', 'Api\User\UserController@show')->middleware('permission:users.show');
-			Route::put('/{user:slug}', 'Api\User\UserController@update')->middleware('permission:users.edit');
-			Route::delete('/{user:slug}', 'Api\User\UserController@destroy')->middleware('permission:users.delete');
-			Route::put('/{user:slug}/activate', 'Api\User\UserController@activate')->middleware('permission:users.active');
-			Route::put('/{user:slug}/deactivate', 'Api\User\UserController@deactivate')->middleware('permission:users.deactive');
+			Route::get('/{user:id}', 'Api\User\UserController@show')->middleware('permission:users.show');
+			Route::put('/{user:id}', 'Api\User\UserController@update')->middleware('permission:users.edit');
+			Route::delete('/{user:id}', 'Api\User\UserController@destroy')->middleware('permission:users.delete');
+			Route::put('/{user:id}/activate', 'Api\User\UserController@activate')->middleware('permission:users.active');
+			Route::put('/{user:id}/deactivate', 'Api\User\UserController@deactivate')->middleware('permission:users.deactive');
 		});
 
 		// Categories
 		Route::group(['prefix' => 'categories'], function () {
 			Route::get('/', 'Api\CategoryController@index')->middleware('permission:categories.index');
 			Route::post('/', 'Api\CategoryController@store')->middleware('permission:categories.create');
-			Route::get('/{category:slug}', 'Api\CategoryController@show')->middleware('permission:categories.show');
-			Route::put('/{category:slug}', 'Api\CategoryController@update')->middleware('permission:categories.edit');
-			Route::delete('/{category:slug}', 'Api\CategoryController@destroy')->middleware('permission:categories.delete');
-			Route::put('/{category:slug}/activar', 'Api\CategoryController@activate')->middleware('permission:categories.active');
-			Route::put('/{category:slug}/desactivar', 'Api\CategoryController@deactivate')->middleware('permission:categories.deactive');
+			Route::get('/{category:id}', 'Api\CategoryController@show')->middleware('permission:categories.show');
+			Route::put('/{category:id}', 'Api\CategoryController@update')->middleware('permission:categories.edit');
+			Route::delete('/{category:id}', 'Api\CategoryController@destroy')->middleware('permission:categories.delete');
+			Route::put('/{category:id}/activar', 'Api\CategoryController@activate')->middleware('permission:categories.active');
+			Route::put('/{category:id}/desactivar', 'Api\CategoryController@deactivate')->middleware('permission:categories.deactive');
 		});
 	});
 });

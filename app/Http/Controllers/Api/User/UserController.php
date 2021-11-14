@@ -16,10 +16,29 @@ use Arr;
 class UserController extends ApiController
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    *
+    * @OA\Get(
+    *   path="/api/v1/users",
+    *   tags={"Users"},
+    *   summary="Get users",
+    *   description="Returns all users",
+    *   operationId="indexUser",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Response(
+    *       response=200,
+    *       description="Show all users.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   )
+    * )
+    */
     public function index() {
 		$users=User::get()->map(function($user) {
 			return $this->dataUser($user);
@@ -33,11 +52,109 @@ class UserController extends ApiController
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    *
+    * @OA\Post(
+    *   path="/api/v1/users",
+    *   tags={"Users"},
+    *   summary="Register user",
+    *   description="Create a new user",
+    *   operationId="storeUser",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="name",
+    *       in="query",
+    *       description="Name of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="lastname",
+    *       in="query",
+    *       description="Lastname of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="username",
+    *       in="query",
+    *       description="Username of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="email",
+    *       in="query",
+    *       description="Email of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="password",
+    *       in="query",
+    *       description="Password of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="password_confirmation",
+    *       in="query",
+    *       description="Password confirm of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="type",
+    *       in="query",
+    *       description="Type of user (Super Admin, Admin, User)",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="photo",
+    *       in="query",
+    *       description="Photo of user",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Registered user.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=422,
+    *       description="Data not valid."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
+    */
     public function store(ApiUserStoreRequest $request) {
     	$data=array('name' => request('name'), 'lastname' => request('lastname'), 'username' => request('username'), 'email' => request('email'), 'password' => Hash::make(request('password')));
     	$user=User::create($data);
@@ -59,10 +176,41 @@ class UserController extends ApiController
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+    *
+    * @OA\Get(
+    *   path="/api/v1/users/{id}",
+    *   tags={"Users"},
+    *   summary="Get users",
+    *   description="Returns a single user",
+    *   operationId="showUser",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="id",
+    *       in="path",
+    *       description="Search for ID",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="integer"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Show user.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=404,
+    *       description="No results found."
+    *   )
+    * )
      */
     public function show(User $user) {
     	$user=$this->dataUser($user);
@@ -70,12 +218,82 @@ class UserController extends ApiController
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    *
+    * @OA\Put(
+    *   path="/api/v1/users/{id}",
+    *   tags={"Users"},
+    *   summary="Update user",
+    *   description="Update a single user",
+    *   operationId="updateUser",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="id",
+    *       in="path",
+    *       description="Search for ID",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="integer"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="name",
+    *       in="query",
+    *       description="Name of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="lastname",
+    *       in="query",
+    *       description="Lastname of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="type",
+    *       in="query",
+    *       description="Type of user (Super Admin, Admin, User)",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="photo",
+    *       in="query",
+    *       description="Photo of user",
+    *       required=false,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Registered user.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=422,
+    *       description="Data not valid."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
+    */
     public function update(ApiUserUpdateRequest $request, User $user) {
     	$data=array('name' => request('name'), 'lastname' => request('lastname'));
     	$user->fill($data)->save();        
@@ -96,10 +314,45 @@ class UserController extends ApiController
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\User  $user
-     * @return \Illuminate\Http\Response
+    *
+    * @OA\Delete(
+    *   path="/api/v1/users/{id}",
+    *   tags={"Users"},
+    *   summary="Delete user",
+    *   description="Delete a single user",
+    *   operationId="destroyUser",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="id",
+    *       in="path",
+    *       description="Search for ID",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="integer"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Delete user.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=404,
+    *       description="No results found."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
      */
     public function destroy(User $user)
     {
@@ -111,6 +364,47 @@ class UserController extends ApiController
     	}
     }
 
+    /**
+    *
+    * @OA\Put(
+    *   path="/api/v1/users/{id}/deactivate",
+    *   tags={"Users"},
+    *   summary="Deactivate user",
+    *   description="Deactivate a single user",
+    *   operationId="deactivateUser",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="id",
+    *       in="path",
+    *       description="Search for ID",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="integer"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Deactivate user.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=404,
+    *       description="No results found."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
+     */
     public function deactivate(Request $request, User $user) {
     	$user->fill(['state' => "0"])->save();
     	if ($user) {
@@ -121,6 +415,47 @@ class UserController extends ApiController
     	}
     }
 
+    /**
+    *
+    * @OA\Put(
+    *   path="/api/v1/users/{id}/activate",
+    *   tags={"Users"},
+    *   summary="Activate user",
+    *   description="Activate a single user",
+    *   operationId="activateUser",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="id",
+    *       in="path",
+    *       description="Search for ID",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="integer"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Activate user.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=404,
+    *       description="No results found."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
+     */
     public function activate(Request $request, User $user) {
     	$user->fill(['state' => "1"])->save();
     	if ($user) {

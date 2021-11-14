@@ -13,8 +13,64 @@ use Auth;
 
 class AuthController extends ApiController
 {
+	/**
+	* @OA\Post(
+	*	path="/v1/auth/login",
+	*   tags={"Login"},
+	*   summary="Login",
+	*   description="Login for users",
+	*   operationId="login",
+	*   @OA\Parameter(
+	*      	name="email",
+	*      	in="query",
+	*      	required=false,
+	*      	@OA\Schema(
+	*      		type="string"
+	*      	)
+	*   ),
+	*   @OA\Parameter(
+	*      	name="username",
+	*      	in="query",
+	*      	required=false,
+	*      	@OA\Schema(
+	*      		type="string"
+	*      	)
+	*   ),
+	*   @OA\Parameter(
+	*      	name="password",
+	*      	in="query",
+	*      	required=true,
+	*      	@OA\Schema(
+	*        	type="string"
+	*      	)
+	*   ),
+	*   @OA\Response(
+	*      	response=200,
+	*      	description="Login success",
+	*      	@OA\MediaType(
+	*           mediaType="application/json",
+	*      	)
+	*   ),
+	* 	@OA\Response(
+    *   	response=401,
+    *   	description="Not authenticated."
+    * 	),
+    * 	@OA\Response(
+    *  		response=422,
+    *   	description="Data not valid."
+    * 	),
+	*   @OA\Response(
+	*      	response=403,
+	*      	description="Forbidden"
+	*   )
+	* )
+     **/
 	public function login(ApiLoginRequest $request) {
 		$user=User::where('email', request('email'))->orWhere('username', request('username'))->first();
+
+		if (!Hash::check(request('password'), $user->password)) {
+            return response()->json(['code' => 422, 'status' => 'error', 'message' => 'The password is incorrect.'], 422);
+        }
 
 		if ($user->state==0) {
 			return response()->json(['code' => 403, 'status' => 'error', 'message' => 'This user is not allowed to enter.'], 403);
@@ -38,6 +94,87 @@ class AuthController extends ApiController
 		return response()->json(['code' => 401, 'status' => 'error', 'message' => 'The credentials do not match.'], 401);
 	}
 
+	/**
+    * @OA\Post(
+    *	path="/v1/auth/register",
+    *   tags={"Register"},
+    *   summary="Register user",
+    *   operationId="register",
+    *   @OA\Parameter(
+    *       name="name",
+    *       in="query",
+    *       description="Name of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="lastname",
+    *       in="query",
+    *       description="Lastname of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="username",
+    *       in="query",
+    *       description="Username of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="email",
+    *       in="query",
+    *       description="Email of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="password",
+    *       in="query",
+    *       description="Password of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Parameter(
+    *       name="password_confirmation",
+    *       in="query",
+    *       description="Password confirm of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    * 	@OA\Response(
+    * 		response=201,
+    *   	description="Register user.",
+    *   	@OA\MediaType(
+    *      		mediaType="application/json",
+    *   	)
+    * 	),
+    * 	@OA\Response(
+    *   	response=401,
+    *   	description="Not authenticated."
+    * 	),
+    * 	@OA\Response(
+    *  		response=422,
+    *   	description="Data not valid."
+    * 	),
+    * 	@OA\Response(
+    *   	response=500,
+    *   	description="An error occurred during the process."
+    * 	)
+    * )
+     **/
 	public function register(ApiRegisterRequest $request) {
         $data=array('name' => request('name'), 'lastname' => request('lastname'), 'username' => request('username'), 'email' => request('email'), 'password' => Hash::make(request('password')));
         $user=User::create($data);
@@ -52,6 +189,30 @@ class AuthController extends ApiController
         }
     }
 
+    /**
+    *
+    * @OA\Get(
+    *   path="/api/v1/auth/logout",
+    *   tags={"Logout"},
+    *   summary="Logout",
+    *   description="Account log out",
+    *   operationId="logout",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Response(
+    *       response=200,
+    *       description="Logout success.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   )
+    * )
+    */
 	public function logout(Request $request) {
 		$request->user()->token()->revoke();
 		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The session has been closed successfully.'], 200);
