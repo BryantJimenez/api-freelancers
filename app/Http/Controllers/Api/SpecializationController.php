@@ -1,34 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\Api\User;
+namespace App\Http\Controllers\Api;
 
-use App\User;
+use App\Specialization;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Requests\ApiUserStoreRequest;
-use App\Http\Requests\ApiUserUpdateRequest;
+use App\Http\Requests\ApiSpecializationStoreRequest;
+use App\Http\Requests\ApiSpecializationUpdateRequest;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use App\Jobs\SendEmailRegister;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Arr;
 
-class UserController extends ApiController
+class SpecializationController extends ApiController
 {
     /**
     *
     * @OA\Get(
-    *   path="/api/v1/users",
-    *   tags={"Users"},
-    *   summary="Get users",
-    *   description="Returns all users",
-    *   operationId="indexUser",
+    *   path="/api/v1/specializations",
+    *   tags={"Specializations"},
+    *   summary="Get specializations",
+    *   description="Returns all specializations",
+    *   operationId="indexSpecialization",
     *   security={
     *       {"bearerAuth": {}}
     *   },
     *   @OA\Response(
     *       response=200,
-    *       description="Show all users.",
+    *       description="Show all specializations.",
     *       @OA\MediaType(
     *           mediaType="application/json"
     *       )
@@ -44,12 +42,10 @@ class UserController extends ApiController
     * )
     */
     public function index() {
-		$users=User::get()->map(function($user) {
-			return $this->dataUser($user);
-		});
+		$specializations=Specialization::select("id", "name", "slug", "state")->get();
 
         $page=Paginator::resolveCurrentPage('page');
-        $pagination=new LengthAwarePaginator($users, $total=count($users), $perPage=15, $page, ['path' => Paginator::resolveCurrentPath(), 'pageName' => 'page']);
+        $pagination=new LengthAwarePaginator($specializations, $total=count($specializations), $perPage=15, $page, ['path' => Paginator::resolveCurrentPath(), 'pageName' => 'page']);
         $pagination=Arr::collapse([$pagination->toArray(), ['code' => 200, 'status' => 'success']]);
 
     	return response()->json($pagination, 200);
@@ -58,89 +54,26 @@ class UserController extends ApiController
     /**
     *
     * @OA\Post(
-    *   path="/api/v1/users",
-    *   tags={"Users"},
-    *   summary="Register user",
-    *   description="Create a new user",
-    *   operationId="storeUser",
+    *   path="/api/v1/specializations",
+    *   tags={"Specializations"},
+    *   summary="Register specialization",
+    *   description="Create a new specialization",
+    *   operationId="storeSpecialization",
     *   security={
     *       {"bearerAuth": {}}
     *   },
     *   @OA\Parameter(
     *       name="name",
     *       in="query",
-    *       description="Name of user",
+    *       description="Name of specialization",
     *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="lastname",
-    *       in="query",
-    *       description="Lastname of user",
-    *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="username",
-    *       in="query",
-    *       description="Username of user",
-    *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="email",
-    *       in="query",
-    *       description="Email of user",
-    *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="password",
-    *       in="query",
-    *       description="Password of user",
-    *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="password_confirmation",
-    *       in="query",
-    *       description="Password confirm of user",
-    *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="type",
-    *       in="query",
-    *       description="Type of user (Super Admin, Administrator, User)",
-    *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="photo",
-    *       in="query",
-    *       description="Photo of user",
-    *       required=false,
     *       @OA\Schema(
     *           type="string"
     *       )
     *   ),
     *   @OA\Response(
     *       response=200,
-    *       description="Registered user.",
+    *       description="Registered specialization.",
     *       @OA\MediaType(
     *           mediaType="application/json"
     *       )
@@ -163,21 +96,11 @@ class UserController extends ApiController
     *   )
     * )
     */
-    public function store(ApiUserStoreRequest $request) {
-    	$data=array('name' => request('name'), 'lastname' => request('lastname'), 'username' => request('username'), 'email' => request('email'), 'password' => Hash::make(request('password')));
-    	$user=User::create($data);
-
-    	if ($user) {
-    		$user->assignRole(request('type'));
-
-    		if (!is_null(request('photo'))) {
-    			$user->fill(['photo' => request('photo')])->save();
-    		}
-    		// SendEmailRegister::dispatch($user->slug);
-            $user=User::where('id', $user->id)->first();
-            $user=$this->dataUser($user);
-
-            return response()->json(['code' => 201, 'status' => 'success', 'message' => 'The user has been successfully registered.', 'data' => $user], 201);
+    public function store(ApiSpecializationStoreRequest $request) {
+    	$specialization=Specialization::create(['name' => request('name')]);
+    	if ($specialization) {
+            $specialization=Specialization::select("id", "name", "slug", "state")->where('id', $specialization->id)->first();
+            return response()->json(['code' => 201, 'status' => 'success', 'message' => 'The specialization has been successfully registered.', 'data' => $specialization], 201);
     	} else {
     		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
@@ -186,11 +109,11 @@ class UserController extends ApiController
     /**
     *
     * @OA\Get(
-    *   path="/api/v1/users/{id}",
-    *   tags={"Users"},
-    *   summary="Get user",
-    *   description="Returns a single user",
-    *   operationId="showUser",
+    *   path="/api/v1/specializations/{id}",
+    *   tags={"Specializations"},
+    *   summary="Get specialization",
+    *   description="Returns a single specialization",
+    *   operationId="showSpecialization",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -205,7 +128,7 @@ class UserController extends ApiController
     *   ),
     *   @OA\Response(
     *       response=200,
-    *       description="Show user.",
+    *       description="Show specialization.",
     *       @OA\MediaType(
     *           mediaType="application/json"
     *       )
@@ -224,19 +147,19 @@ class UserController extends ApiController
     *   )
     * )
      */
-    public function show(User $user) {
-    	$user=$this->dataUser($user);
-    	return response()->json(['code' => 200, 'status' => 'success', 'data' => $user], 200);
+    public function show(Specialization $specialization) {
+    	$specialization=$specialization->only("id", "name", "slug", "state");
+    	return response()->json(['code' => 200, 'status' => 'success', 'data' => $specialization], 200);
     }
 
     /**
     *
     * @OA\Put(
-    *   path="/api/v1/users/{id}",
-    *   tags={"Users"},
-    *   summary="Update user",
-    *   description="Update a single user",
-    *   operationId="updateUser",
+    *   path="/api/v1/specializations/{id}",
+    *   tags={"Specializations"},
+    *   summary="Update specialization",
+    *   description="Update a single specialization",
+    *   operationId="updateSpecialization",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -252,42 +175,15 @@ class UserController extends ApiController
     *   @OA\Parameter(
     *       name="name",
     *       in="query",
-    *       description="Name of user",
+    *       description="Name of specialization",
     *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="lastname",
-    *       in="query",
-    *       description="Lastname of user",
-    *       required=true,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="type",
-    *       in="query",
-    *       description="Type of user (Super Admin, Administrator, User)",
-    *       required=false,
-    *       @OA\Schema(
-    *           type="string"
-    *       )
-    *   ),
-    *   @OA\Parameter(
-    *       name="photo",
-    *       in="query",
-    *       description="Photo of user",
-    *       required=false,
     *       @OA\Schema(
     *           type="string"
     *       )
     *   ),
     *   @OA\Response(
     *       response=200,
-    *       description="Registered user.",
+    *       description="Registered specialization.",
     *       @OA\MediaType(
     *           mediaType="application/json"
     *       )
@@ -310,20 +206,11 @@ class UserController extends ApiController
     *   )
     * )
     */
-    public function update(ApiUserUpdateRequest $request, User $user) {
-    	$data=array('name' => request('name'), 'lastname' => request('lastname'));
-    	$user->fill($data)->save();        
-
-    	if ($user) {
-    		if (!is_null(request('type'))) {
-    			$user->syncRoles([request('type')]);
-    		}
-    		if (!is_null(request('photo'))) {
-    			$user->fill(['photo' => request('photo')])->save();
-    		}
-    		$user=$this->dataUser($user);
-
-    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been edited successfully.', 'data' => $user], 200);
+    public function update(ApiSpecializationUpdateRequest $request, Specialization $specialization) {
+    	$specialization->fill(['name' => request('name')])->save();        
+    	if ($specialization) {
+    		$specialization=Specialization::select("id", "name", "slug", "state")->where('id', $specialization->id)->first();
+    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The specialization has been edited successfully.', 'data' => $specialization], 200);
     	} else {
     		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
@@ -332,11 +219,11 @@ class UserController extends ApiController
     /**
     *
     * @OA\Delete(
-    *   path="/api/v1/users/{id}",
-    *   tags={"Users"},
-    *   summary="Delete user",
-    *   description="Delete a single user",
-    *   operationId="destroyUser",
+    *   path="/api/v1/specializations/{id}",
+    *   tags={"Specializations"},
+    *   summary="Delete specialization",
+    *   description="Delete a single specialization",
+    *   operationId="destroySpecialization",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -351,7 +238,7 @@ class UserController extends ApiController
     *   ),
     *   @OA\Response(
     *       response=200,
-    *       description="Delete user.",
+    *       description="Delete specialization.",
     *       @OA\MediaType(
     *           mediaType="application/json"
     *       )
@@ -374,11 +261,11 @@ class UserController extends ApiController
     *   )
     * )
      */
-    public function destroy(User $user)
+    public function destroy(Specialization $specialization)
     {
-    	$user->delete();
-    	if ($user) {
-    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been successfully removed.'], 200);
+    	$specialization->delete();
+    	if ($specialization) {
+    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The specialization has been successfully removed.'], 200);
     	} else {
     		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
@@ -387,11 +274,11 @@ class UserController extends ApiController
     /**
     *
     * @OA\Put(
-    *   path="/api/v1/users/{id}/deactivate",
-    *   tags={"Users"},
-    *   summary="Deactivate user",
-    *   description="Deactivate a single user",
-    *   operationId="deactivateUser",
+    *   path="/api/v1/specializations/{id}/deactivate",
+    *   tags={"Specializations"},
+    *   summary="Deactivate specialization",
+    *   description="Deactivate a single specialization",
+    *   operationId="deactivateSpecialization",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -406,7 +293,7 @@ class UserController extends ApiController
     *   ),
     *   @OA\Response(
     *       response=200,
-    *       description="Deactivate user.",
+    *       description="Deactivate specialization.",
     *       @OA\MediaType(
     *           mediaType="application/json"
     *       )
@@ -429,11 +316,11 @@ class UserController extends ApiController
     *   )
     * )
      */
-    public function deactivate(Request $request, User $user) {
-    	$user->fill(['state' => "0"])->save();
-    	if ($user) {
-    		$user=$this->dataUser($user);
-    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been successfully deactivated.', 'data' => $user], 200);
+    public function deactivate(Request $request, Specialization $specialization) {
+    	$specialization->fill(['state' => "0"])->save();
+    	if ($specialization) {
+    		$specialization=Specialization::select("id", "name", "slug", "state")->where('id', $specialization->id)->first();
+    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The specialization has been successfully deactivated.', 'data' => $specialization], 200);
     	} else {
     		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
@@ -442,11 +329,11 @@ class UserController extends ApiController
     /**
     *
     * @OA\Put(
-    *   path="/api/v1/users/{id}/activate",
-    *   tags={"Users"},
-    *   summary="Activate user",
-    *   description="Activate a single user",
-    *   operationId="activateUser",
+    *   path="/api/v1/specializations/{id}/activate",
+    *   tags={"Specializations"},
+    *   summary="Activate specialization",
+    *   description="Activate a single specialization",
+    *   operationId="activateSpecialization",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -461,7 +348,7 @@ class UserController extends ApiController
     *   ),
     *   @OA\Response(
     *       response=200,
-    *       description="Activate user.",
+    *       description="Activate specialization.",
     *       @OA\MediaType(
     *           mediaType="application/json"
     *       )
@@ -484,11 +371,11 @@ class UserController extends ApiController
     *   )
     * )
      */
-    public function activate(Request $request, User $user) {
-    	$user->fill(['state' => "1"])->save();
-    	if ($user) {
-    		$user=$this->dataUser($user);
-    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been successfully activated.', 'data' => $user], 200);
+    public function activate(Request $request, Specialization $specialization) {
+    	$specialization->fill(['state' => "1"])->save();
+    	if ($specialization) {
+    		$specialization=Specialization::select("id", "name", "slug", "state")->where('id', $specialization->id)->first();
+    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The specialization has been successfully activated.', 'data' => $specialization], 200);
     	} else {
     		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}

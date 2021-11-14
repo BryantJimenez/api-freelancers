@@ -25,8 +25,12 @@ class CreateUsersTable extends Migration
             $table->string('password')->nullable();
             $table->enum('state', [0, 1])->default(1);
             $table->rememberToken();
+            $table->bigInteger('country_id')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            #Relations
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null')->onUpdate('cascade');
         });
     }
 

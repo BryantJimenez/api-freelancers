@@ -8,6 +8,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 
 class Handler extends ExceptionHandler
 {
@@ -65,6 +66,10 @@ class Handler extends ExceptionHandler
 
             if ($exception instanceof AuthenticationException) {
                 return response()->json(['code' => 401, 'status' => 'error', 'message' => 'Not authenticated.'], 401);
+            }
+
+            if ($exception instanceof UnauthorizedException) {
+                return response()->json(['code' => 403, 'status' => 'error', 'message' => 'Forbidden.'], 403);
             }
 
             if ($exception instanceof ValidationException) {

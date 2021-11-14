@@ -192,6 +192,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     }
                 },
                 "security": [
@@ -211,7 +214,7 @@
                     {
                         "name": "name",
                         "in": "query",
-                        "description": "Name of user",
+                        "description": "Name of category",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -227,6 +230,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "422": {
                         "description": "Data not valid."
@@ -270,6 +276,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "404": {
                         "description": "No results found."
@@ -318,6 +327,9 @@
                     "401": {
                         "description": "Not authenticated."
                     },
+                    "403": {
+                        "description": "Forbidden."
+                    },
                     "422": {
                         "description": "Data not valid."
                     },
@@ -358,6 +370,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "404": {
                         "description": "No results found."
@@ -402,6 +417,9 @@
                     "401": {
                         "description": "Not authenticated."
                     },
+                    "403": {
+                        "description": "Forbidden."
+                    },
                     "404": {
                         "description": "No results found."
                     },
@@ -444,6 +462,350 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/countries": {
+            "get": {
+                "tags": [
+                    "Countries"
+                ],
+                "summary": "Get countries",
+                "description": "Returns all countries",
+                "operationId": "indexCountry",
+                "responses": {
+                    "200": {
+                        "description": "Show all countries.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/languages": {
+            "get": {
+                "tags": [
+                    "Languages"
+                ],
+                "summary": "Get languages",
+                "description": "Returns all languages",
+                "operationId": "indexLanguage",
+                "responses": {
+                    "200": {
+                        "description": "Show all languages.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/specializations": {
+            "get": {
+                "tags": [
+                    "Specializations"
+                ],
+                "summary": "Get specializations",
+                "description": "Returns all specializations",
+                "operationId": "indexSpecialization",
+                "responses": {
+                    "200": {
+                        "description": "Show all specializations.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Specializations"
+                ],
+                "summary": "Register specialization",
+                "description": "Create a new specialization",
+                "operationId": "storeSpecialization",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of specialization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registered specialization.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/specializations/{id}": {
+            "get": {
+                "tags": [
+                    "Specializations"
+                ],
+                "summary": "Get specialization",
+                "description": "Returns a single specialization",
+                "operationId": "showSpecialization",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show specialization.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Specializations"
+                ],
+                "summary": "Update specialization",
+                "description": "Update a single specialization",
+                "operationId": "updateSpecialization",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "Name of specialization",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registered specialization.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Specializations"
+                ],
+                "summary": "Delete specialization",
+                "description": "Delete a single specialization",
+                "operationId": "destroySpecialization",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete specialization.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/specializations/{id}/deactivate": {
+            "put": {
+                "tags": [
+                    "Specializations"
+                ],
+                "summary": "Deactivate specialization",
+                "description": "Deactivate a single specialization",
+                "operationId": "deactivateSpecialization",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deactivate specialization.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/specializations/{id}/activate": {
+            "put": {
+                "tags": [
+                    "Specializations"
+                ],
+                "summary": "Activate specialization",
+                "description": "Activate a single specialization",
+                "operationId": "activateSpecialization",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Activate specialization.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "404": {
                         "description": "No results found."
@@ -665,6 +1027,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     }
                 },
                 "security": [
@@ -738,7 +1103,7 @@
                     {
                         "name": "type",
                         "in": "query",
-                        "description": "Type of user (Super Admin, Admin, User)",
+                        "description": "Type of user (Super Admin, Administrator, User)",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -763,6 +1128,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "422": {
                         "description": "Data not valid."
@@ -806,6 +1174,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "404": {
                         "description": "No results found."
@@ -855,7 +1226,7 @@
                     {
                         "name": "type",
                         "in": "query",
-                        "description": "Type of user (Super Admin, Admin, User)",
+                        "description": "Type of user (Super Admin, Administrator, User)",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -880,6 +1251,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "422": {
                         "description": "Data not valid."
@@ -921,6 +1295,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "404": {
                         "description": "No results found."
@@ -965,6 +1342,9 @@
                     "401": {
                         "description": "Not authenticated."
                     },
+                    "403": {
+                        "description": "Forbidden."
+                    },
                     "404": {
                         "description": "No results found."
                     },
@@ -1007,6 +1387,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "404": {
                         "description": "No results found."

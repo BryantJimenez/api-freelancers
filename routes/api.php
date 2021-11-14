@@ -59,5 +59,20 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::put('/{category:id}/activate', 'Api\CategoryController@activate')->middleware('permission:categories.active');
 			Route::put('/{category:id}/deactivate', 'Api\CategoryController@deactivate')->middleware('permission:categories.deactive');
 		});
+
+		// Specializations
+		Route::group(['prefix' => 'specializations'], function () {
+			Route::get('/', 'Api\SpecializationController@index')->middleware('permission:specializations.index');
+			Route::post('/', 'Api\SpecializationController@store')->middleware('permission:specializations.create');
+			Route::get('/{specialization:id}', 'Api\SpecializationController@show')->middleware('permission:specializations.show');
+			Route::put('/{specialization:id}', 'Api\SpecializationController@update')->middleware('permission:specializations.edit');
+			Route::delete('/{specialization:id}', 'Api\SpecializationController@destroy')->middleware('permission:specializations.delete');
+			Route::put('/{specialization:id}/activate', 'Api\SpecializationController@activate')->middleware('permission:specializations.active');
+			Route::put('/{specialization:id}/deactivate', 'Api\SpecializationController@deactivate')->middleware('permission:specializations.deactive');
+		});
 	});
+
+	//////////////////////////////////////// DATA ////////////////////////////////////////////////////
+	Route::get('/countries', 'Api\CountryController@index');
+	Route::get('/languages', 'Api\LanguageController@index');
 });

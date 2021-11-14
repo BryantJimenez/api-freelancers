@@ -34,6 +34,10 @@ class CategoryController extends ApiController
     *   @OA\Response(
     *       response=401,
     *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
     *   )
     * )
     */
@@ -61,7 +65,7 @@ class CategoryController extends ApiController
     *   @OA\Parameter(
     *       name="name",
     *       in="query",
-    *       description="Name of user",
+    *       description="Name of category",
     *       required=true,
     *       @OA\Schema(
     *           type="string"
@@ -77,6 +81,10 @@ class CategoryController extends ApiController
     *   @OA\Response(
     *       response=401,
     *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
     *   ),
     *   @OA\Response(
     *       response=422,
@@ -130,6 +138,10 @@ class CategoryController extends ApiController
     *       description="Not authenticated."
     *   ),
     *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
+    *   ),
+    *   @OA\Response(
     *       response=404,
     *       description="No results found."
     *   )
@@ -179,6 +191,10 @@ class CategoryController extends ApiController
     *   @OA\Response(
     *       response=401,
     *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
     *   ),
     *   @OA\Response(
     *       response=422,
@@ -232,6 +248,10 @@ class CategoryController extends ApiController
     *       description="Not authenticated."
     *   ),
     *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
+    *   ),
+    *   @OA\Response(
     *       response=404,
     *       description="No results found."
     *   ),
@@ -283,6 +303,10 @@ class CategoryController extends ApiController
     *       description="Not authenticated."
     *   ),
     *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
+    *   ),
+    *   @OA\Response(
     *       response=404,
     *       description="No results found."
     *   ),
@@ -332,6 +356,10 @@ class CategoryController extends ApiController
     *   @OA\Response(
     *       response=401,
     *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
     *   ),
     *   @OA\Response(
     *       response=404,
