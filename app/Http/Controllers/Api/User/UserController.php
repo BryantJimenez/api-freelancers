@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\User;
+use App\Models\User;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Requests\ApiUserStoreRequest;
-use App\Http\Requests\ApiUserUpdateRequest;
+use App\Http\Requests\Api\User\ApiUserStoreRequest;
+use App\Http\Requests\Api\User\ApiUserUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\SendEmailRegister;
@@ -44,7 +44,7 @@ class UserController extends ApiController
     * )
     */
     public function index() {
-		$users=User::get()->map(function($user) {
+		$users=User::with(['roles'])->get()->map(function($user) {
 			return $this->dataUser($user);
 		});
 
@@ -132,7 +132,7 @@ class UserController extends ApiController
     *   @OA\Parameter(
     *       name="photo",
     *       in="query",
-    *       description="Photo of user",
+    *       description="Photo filename of user",
     *       required=false,
     *       @OA\Schema(
     *           type="string"
@@ -174,7 +174,7 @@ class UserController extends ApiController
     			$user->fill(['photo' => request('photo')])->save();
     		}
     		// SendEmailRegister::dispatch($user->slug);
-            $user=User::where('id', $user->id)->first();
+            $user=User::with(['roles'])->where('id', $user->id)->first();
             $user=$this->dataUser($user);
 
             return response()->json(['code' => 201, 'status' => 'success', 'message' => 'The user has been successfully registered.', 'data' => $user], 201);
@@ -279,7 +279,7 @@ class UserController extends ApiController
     *   @OA\Parameter(
     *       name="photo",
     *       in="query",
-    *       description="Photo of user",
+    *       description="Photo filename of user",
     *       required=false,
     *       @OA\Schema(
     *           type="string"
@@ -321,6 +321,7 @@ class UserController extends ApiController
     		if (!is_null(request('photo'))) {
     			$user->fill(['photo' => request('photo')])->save();
     		}
+            $user=User::with(['roles'])->where('id', $user->id)->first();
     		$user=$this->dataUser($user);
 
     		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been edited successfully.', 'data' => $user], 200);

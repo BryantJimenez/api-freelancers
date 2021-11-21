@@ -18,6 +18,7 @@ class CreateLanguagesTable extends Migration
             $table->string('code');
             $table->string('name');
             $table->string('native_name');
+            $table->enum('state', [0, 1])->default(1);
             $table->timestamps();
             $table->softDeletes();
         });

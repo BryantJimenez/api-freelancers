@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Country;
+use App\Models\Country;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 

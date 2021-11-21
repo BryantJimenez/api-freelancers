@@ -41,9 +41,9 @@ class RegisterNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->subject('Nuevo Usuario')
-                    ->greeting('Hola '.$notifiable->name.' '.$notifiable->lastname.', bienvenido a '.config('app.name').', te has registrado correctamente.')
-                    ->salutation('Saludos, '.config('app.name'));
+                    ->subject('New user')
+                    ->greeting('Hello '.$notifiable->name.' '.$notifiable->lastname.', welcome to '.config('app.name').', you have successfully registered.')
+                    ->salutation('Greetings, '.config('app.name'));
     }
 
     /**

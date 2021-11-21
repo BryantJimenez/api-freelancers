@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Models\User;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Requests\ApiProfileUpdateRequest;
-use App\Http\Requests\ApiProfilePasswordUpdateRequest;
-use App\Http\Requests\ApiProfileEmailUpdateRequest;
+use App\Http\Requests\Api\Profile\ApiProfileUpdateRequest;
+use App\Http\Requests\Api\Profile\ApiProfilePasswordUpdateRequest;
+use App\Http\Requests\Api\Profile\ApiProfileEmailUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Auth;
@@ -37,8 +38,9 @@ class ProfileController extends ApiController
     * )
     */
     public function get() {
-    	$user=$this->dataUser(Auth::user());
-    	return response()->json(['code' => 200, 'status' => 'success', 'data' => $user], 200);
+        $user=User::with(['roles'])->where('id', Auth::user()->id)->first();
+        $user=$this->dataUser($user);
+        return response()->json(['code' => 200, 'status' => 'success', 'data' => $user], 200);
     }
 
     /**
@@ -109,6 +111,7 @@ class ProfileController extends ApiController
     		if (!is_null(request('photo'))) {
     			$user->fill(['photo' => request('photo')])->save();
     		}
+            $user=User::with(['roles'])->where('id', $user->id)->first();
     		$user=$this->dataUser($user);
 
     		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'User profile updated successfully.', 'data' => $user], 200);
@@ -176,14 +179,14 @@ class ProfileController extends ApiController
         if (request('current_password')==request('new_password')) {
             return response()->json(['code' => 422, 'status' => 'error', 'message' => 'The new password cannot be the same as the current one.'], 422);
         }
-    	$user->fill(['password' => Hash::make(request('new_password'))])->save();
+        $user->fill(['password' => Hash::make(request('new_password'))])->save();
 
-    	if ($user) {
-    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Password changed successfully.'], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
-    	}
-    }
+        if ($user) {
+          return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Password changed successfully.'], 200);
+      } else {
+          return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
+      }
+  }
 
     /**
     *
@@ -244,12 +247,12 @@ class ProfileController extends ApiController
         if (request('new_email')==$user->email) {
             return response()->json(['code' => 422, 'status' => 'error', 'message' => 'The new email cannot be the same as the current one.'], 422);
         }
-    	$user->fill(['email' => request('new_email')])->save();
+        $user->fill(['email' => request('new_email')])->save();
 
-    	if ($user) {
-    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Email changed successfully.'], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
-    	}
-    }
+        if ($user) {
+          return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Email changed successfully.'], 200);
+      } else {
+          return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
+      }
+  }
 }

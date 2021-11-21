@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api\Category;
 
-use Spatie\Permission\Models\Role;
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class ApiUserUpdateRequest extends FormRequest
+class ApiCategoryUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,12 +26,10 @@ class ApiUserUpdateRequest extends FormRequest
      */
     public function rules()
     {
-        $roles=Role::all()->pluck('name');
+        $categories=Category::where('id', '!=', $this->category->id)->get()->pluck('id');
         return [
-            'photo' => 'nullable|string|min:2|max:191',
-            'name' => 'required|string|min:2|max:191',
-            'lastname' => 'required|string|min:2|max:191',
-            'type' => 'nullable|'.Rule::in($roles)
+            'name' => 'required|string|min:2|max:191|'.Rule::unique('categories')->ignore($this->category->slug, 'slug'),
+            'category_id' => 'nullable|'.Rule::in($categories)
         ];
     }
 }

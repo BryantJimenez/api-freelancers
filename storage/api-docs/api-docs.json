@@ -11,6 +11,9 @@
     "servers": [
         {
             "url": "http://localhost:8000"
+        },
+        {
+            "url": "http://api-freelancer.otterscompany.com"
         }
     ],
     "paths": {
@@ -219,6 +222,14 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Category parent ID",
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -314,6 +325,14 @@
                         "required": true,
                         "schema": {
                             "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Category parent ID",
+                        "schema": {
+                            "type": "integer"
                         }
                     }
                 ],
@@ -512,24 +531,6 @@
                         "content": {
                             "application/json": {}
                         }
-                    }
-                }
-            }
-        },
-        "/api/v1/specializations": {
-            "get": {
-                "tags": [
-                    "Specializations"
-                ],
-                "summary": "Get specializations",
-                "description": "Returns all specializations",
-                "operationId": "indexSpecialization",
-                "responses": {
-                    "200": {
-                        "description": "Show all specializations.",
-                        "content": {
-                            "application/json": {}
-                        }
                     },
                     "401": {
                         "description": "Not authenticated."
@@ -546,16 +547,34 @@
             },
             "post": {
                 "tags": [
-                    "Specializations"
+                    "Languages"
                 ],
-                "summary": "Register specialization",
-                "description": "Create a new specialization",
-                "operationId": "storeSpecialization",
+                "summary": "Register language",
+                "description": "Create a new language",
+                "operationId": "storeLanguage",
                 "parameters": [
                     {
                         "name": "name",
                         "in": "query",
-                        "description": "Name of specialization",
+                        "description": "Name of language",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Code of language",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "native_name",
+                        "in": "query",
+                        "description": "Name native of language",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -564,7 +583,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Registered specialization.",
+                        "description": "Registered language.",
                         "content": {
                             "application/json": {}
                         }
@@ -589,14 +608,14 @@
                 ]
             }
         },
-        "/api/v1/specializations/{id}": {
+        "/api/v1/languages/{id}": {
             "get": {
                 "tags": [
-                    "Specializations"
+                    "Languages"
                 ],
-                "summary": "Get specialization",
-                "description": "Returns a single specialization",
-                "operationId": "showSpecialization",
+                "summary": "Get language",
+                "description": "Returns a single language",
+                "operationId": "showLanguage",
                 "parameters": [
                     {
                         "name": "id",
@@ -610,7 +629,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Show specialization.",
+                        "description": "Show language.",
                         "content": {
                             "application/json": {}
                         }
@@ -633,11 +652,11 @@
             },
             "put": {
                 "tags": [
-                    "Specializations"
+                    "Languages"
                 ],
-                "summary": "Update specialization",
-                "description": "Update a single specialization",
-                "operationId": "updateSpecialization",
+                "summary": "Update language",
+                "description": "Update a single language",
+                "operationId": "updateLanguage",
                 "parameters": [
                     {
                         "name": "id",
@@ -651,7 +670,25 @@
                     {
                         "name": "name",
                         "in": "query",
-                        "description": "Name of specialization",
+                        "description": "Name of language",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Code of language",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "native_name",
+                        "in": "query",
+                        "description": "Name native of language",
                         "required": true,
                         "schema": {
                             "type": "string"
@@ -660,7 +697,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Registered specialization.",
+                        "description": "Registered language.",
                         "content": {
                             "application/json": {}
                         }
@@ -686,11 +723,11 @@
             },
             "delete": {
                 "tags": [
-                    "Specializations"
+                    "Languages"
                 ],
-                "summary": "Delete specialization",
-                "description": "Delete a single specialization",
-                "operationId": "destroySpecialization",
+                "summary": "Delete language",
+                "description": "Delete a single language",
+                "operationId": "destroyLanguage",
                 "parameters": [
                     {
                         "name": "id",
@@ -704,7 +741,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Delete specialization.",
+                        "description": "Delete language.",
                         "content": {
                             "application/json": {}
                         }
@@ -729,14 +766,14 @@
                 ]
             }
         },
-        "/api/v1/specializations/{id}/deactivate": {
+        "/api/v1/languages/{id}/deactivate": {
             "put": {
                 "tags": [
-                    "Specializations"
+                    "Languages"
                 ],
-                "summary": "Deactivate specialization",
-                "description": "Deactivate a single specialization",
-                "operationId": "deactivateSpecialization",
+                "summary": "Deactivate language",
+                "description": "Deactivate a single language",
+                "operationId": "deactivateLanguage",
                 "parameters": [
                     {
                         "name": "id",
@@ -750,7 +787,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Deactivate specialization.",
+                        "description": "Deactivate language.",
                         "content": {
                             "application/json": {}
                         }
@@ -775,14 +812,14 @@
                 ]
             }
         },
-        "/api/v1/specializations/{id}/activate": {
+        "/api/v1/languages/{id}/activate": {
             "put": {
                 "tags": [
-                    "Specializations"
+                    "Languages"
                 ],
-                "summary": "Activate specialization",
-                "description": "Activate a single specialization",
-                "operationId": "activateSpecialization",
+                "summary": "Activate language",
+                "description": "Activate a single language",
+                "operationId": "activateLanguage",
                 "parameters": [
                     {
                         "name": "id",
@@ -796,7 +833,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Activate specialization.",
+                        "description": "Activate language.",
                         "content": {
                             "application/json": {}
                         }
@@ -809,6 +846,156 @@
                     },
                     "404": {
                         "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/upgrade": {
+            "post": {
+                "tags": [
+                    "Freelancer Profile"
+                ],
+                "summary": "Upgrade user to freelancer",
+                "description": "Upgrade a profile ",
+                "operationId": "upgradeProfile",
+                "responses": {
+                    "200": {
+                        "description": "Upgrade profile user.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/freelancer": {
+            "get": {
+                "tags": [
+                    "Freelancer Profile"
+                ],
+                "summary": "Get profile freelancer",
+                "description": "Returns profile data",
+                "operationId": "getProfileFreelancer",
+                "responses": {
+                    "200": {
+                        "description": "Get profile freelancer.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Freelancer Profile"
+                ],
+                "summary": "Update freelancer user",
+                "description": "Update a profile freelancer data",
+                "operationId": "updateProfileFreelancer",
+                "parameters": [
+                    {
+                        "name": "country_id",
+                        "in": "query",
+                        "description": "Country ID of user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "description": "Description of user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "language_id[0]",
+                        "in": "query",
+                        "description": "Language ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category_id[0]",
+                        "in": "query",
+                        "description": "Categorie ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update profile freelancer user.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Freelancer Profile"
+                ],
+                "summary": "Delete freelancer user",
+                "description": "Delete a profile freelancer data",
+                "operationId": "destroyProfileFreelance",
+                "responses": {
+                    "200": {
+                        "description": "Delete user freelancer.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
                     },
                     "500": {
                         "description": "An error occurred during the process."
@@ -1112,7 +1299,7 @@
                     {
                         "name": "photo",
                         "in": "query",
-                        "description": "Photo of user",
+                        "description": "Photo filename of user",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -1235,7 +1422,7 @@
                     {
                         "name": "photo",
                         "in": "query",
-                        "description": "Photo of user",
+                        "description": "Photo filename of user",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -1417,6 +1604,44 @@
             }
         }
     },
+    "tags": [
+        {
+            "name": "Login",
+            "description": "Login users endpoints"
+        },
+        {
+            "name": "Register",
+            "description": "Register users endpoint"
+        },
+        {
+            "name": "Logout",
+            "description": "Logout users endpoint"
+        },
+        {
+            "name": "Users",
+            "description": "Users endpoints"
+        },
+        {
+            "name": "Profile",
+            "description": "User profile endpoints"
+        },
+        {
+            "name": "Freelancer Profile",
+            "description": "User freelancer profile endpoints"
+        },
+        {
+            "name": "Countries",
+            "description": "Countries endpoint"
+        },
+        {
+            "name": "Languages",
+            "description": "Languages endpoints"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories endpoints"
+        }
+    ],
     "security": [
         []
     ]

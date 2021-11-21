@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1'], function() {
 	/////////////////////////////////////// AUTH ////////////////////////////////////////////////////
 	Route::group(['prefix' => 'auth'], function() {
-		Route::post('/login', 'Api\AuthController@login');
+		Route::prefix('login')->group(function () {
+			Route::post('/', 'Api\AuthController@login');
+		});
 		Route::post('/register', 'Api\AuthController@register');
 		Route::post('/password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 
@@ -32,6 +34,12 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::group(['prefix' => 'profile'], function () {
 			Route::get('/', 'Api\User\ProfileController@get');
 			Route::put('/', 'Api\User\ProfileController@update');
+			Route::post('/upgrade', 'Api\User\FreelancerController@upgrade');
+			Route::prefix('freelancer')->group(function () {
+				Route::get('/', 'Api\User\FreelancerController@get');
+				Route::put('/', 'Api\User\FreelancerController@update');
+				Route::delete('/', 'Api\User\FreelancerController@destroy');
+			});
 			Route::prefix('change')->group(function () {
 				Route::post('/password', 'Api\User\ProfileController@changePassword');
 				Route::post('/email', 'Api\User\ProfileController@changeEmail');
@@ -60,19 +68,18 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::put('/{category:id}/deactivate', 'Api\CategoryController@deactivate')->middleware('permission:categories.deactive');
 		});
 
-		// Specializations
-		Route::group(['prefix' => 'specializations'], function () {
-			Route::get('/', 'Api\SpecializationController@index')->middleware('permission:specializations.index');
-			Route::post('/', 'Api\SpecializationController@store')->middleware('permission:specializations.create');
-			Route::get('/{specialization:id}', 'Api\SpecializationController@show')->middleware('permission:specializations.show');
-			Route::put('/{specialization:id}', 'Api\SpecializationController@update')->middleware('permission:specializations.edit');
-			Route::delete('/{specialization:id}', 'Api\SpecializationController@destroy')->middleware('permission:specializations.delete');
-			Route::put('/{specialization:id}/activate', 'Api\SpecializationController@activate')->middleware('permission:specializations.active');
-			Route::put('/{specialization:id}/deactivate', 'Api\SpecializationController@deactivate')->middleware('permission:specializations.deactive');
+		// Languages
+		Route::group(['prefix' => 'languages'], function () {
+			Route::get('/', 'Api\LanguageController@index')->middleware('permission:languages.index');
+			Route::post('/', 'Api\LanguageController@store')->middleware('permission:languages.create');
+			Route::get('/{language:id}', 'Api\LanguageController@show')->middleware('permission:languages.show');
+			Route::put('/{language:id}', 'Api\LanguageController@update')->middleware('permission:languages.edit');
+			Route::delete('/{language:id}', 'Api\LanguageController@destroy')->middleware('permission:languages.delete');
+			Route::put('/{language:id}/activate', 'Api\LanguageController@activate')->middleware('permission:languages.active');
+			Route::put('/{language:id}/deactivate', 'Api\LanguageController@deactivate')->middleware('permission:languages.deactive');
 		});
 	});
 
 	//////////////////////////////////////// DATA ////////////////////////////////////////////////////
 	Route::get('/countries', 'Api\CountryController@index');
-	Route::get('/languages', 'Api\LanguageController@index');
 });

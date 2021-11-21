@@ -1,6 +1,6 @@
 <?php
 
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -32,14 +32,14 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'categories.active']);
         Permission::create(['name' => 'categories.deactive']);
 
-        // Specialization Permissions
-        Permission::create(['name' => 'specializations.index']);
-        Permission::create(['name' => 'specializations.create']);
-        Permission::create(['name' => 'specializations.show']);
-        Permission::create(['name' => 'specializations.edit']);
-        Permission::create(['name' => 'specializations.delete']);
-        Permission::create(['name' => 'specializations.active']);
-        Permission::create(['name' => 'specializations.deactive']);
+        // Language Permissions
+        Permission::create(['name' => 'languages.index']);
+        Permission::create(['name' => 'languages.create']);
+        Permission::create(['name' => 'languages.show']);
+        Permission::create(['name' => 'languages.edit']);
+        Permission::create(['name' => 'languages.delete']);
+        Permission::create(['name' => 'languages.active']);
+        Permission::create(['name' => 'languages.deactive']);
 
     	$superadmin=Role::create(['name' => 'Super Admin']);
         $superadmin->givePermissionTo(Permission::all());

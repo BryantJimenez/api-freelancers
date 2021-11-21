@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ApiSpecializationStoreRequest extends FormRequest
+class ApiProfilePasswordUpdateRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -24,7 +24,8 @@ class ApiSpecializationStoreRequest extends FormRequest
   public function rules()
   {
     return [
-      'name' => 'required|string|min:2|max:191'
+      'current_password' => 'required|string|min:8',
+      'new_password' => 'required|string|min:8'
     ];
   }
 }

@@ -14,7 +14,6 @@ class CreateFreelancerLanguageTable extends Migration
     public function up()
     {
         Schema::create('freelancer_language', function (Blueprint $table) {
-            $table->id();
             $table->bigInteger('language_id')->unsigned()->nullable();
             $table->bigInteger('freelancer_id')->unsigned()->nullable();
             $table->timestamps();

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFreelancerSpecializationTable extends Migration
+class CreateCategoryFreelancerTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateFreelancerSpecializationTable extends Migration
      */
     public function up()
     {
-        Schema::create('freelancer_specialization', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('specialization_id')->unsigned()->nullable();
+        Schema::create('category_freelancer', function (Blueprint $table) {
+            $table->bigInteger('category_id')->unsigned()->nullable();
             $table->bigInteger('freelancer_id')->unsigned()->nullable();
             $table->timestamps();
 
             #Relations
-            $table->foreign('specialization_id')->references('id')->on('specializations')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('freelancer_id')->references('id')->on('freelancers')->onDelete('cascade')->onUpdate('cascade');
         });
     }

@@ -1,10 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api\Profile;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Auth;
 
-class ApiProfilePasswordUpdateRequest extends FormRequest
+class ApiProfileEmailUpdateRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -24,8 +27,8 @@ class ApiProfilePasswordUpdateRequest extends FormRequest
   public function rules()
   {
     return [
-      'current_password' => 'required|string|min:8',
-      'new_password' => 'required|string|min:8'
+      'current_email' => 'required|string|email|max:191',
+      'new_email' => 'required|string|email|max:191|unique:users,email,'.Auth::user()->id,
     ];
   }
 }

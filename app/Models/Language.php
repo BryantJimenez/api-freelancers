@@ -1,17 +1,15 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 
-class Category extends Model
+class Language extends Model
 {
-    use SoftDeletes, HasSlug;
+	use SoftDeletes;
 
-    protected $fillable = ['name', 'slug', 'state'];
+    protected $fillable = ['name', 'code', 'native_name', 'state'];
 
     /**
      * Get the state start.
@@ -32,16 +30,15 @@ class Category extends Model
      */
     public function resolveRouteBinding($value, $field = null)
     {
-        $category=$this->where($field, $value)->first();
-        if (!is_null($category)) {
-            return $category;
+        $language=$this->where($field, $value)->first();
+        if (!is_null($language)) {
+            return $language;
         }
 
         return abort(404);
     }
 
-    public function getSlugOptions() : SlugOptions
-    {
-        return SlugOptions::create()->generateSlugsFrom('name')->saveSlugsTo('slug')->slugsShouldBeNoLongerThan(191);
+    public function freelancers() {
+        return $this->belongsToMany(Freelancer\Freelancer::class)->withTimestamps();
     }
 }

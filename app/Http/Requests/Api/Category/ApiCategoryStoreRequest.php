@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api\Category;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ApiCategoryStoreRequest extends FormRequest
 {
@@ -23,8 +26,10 @@ class ApiCategoryStoreRequest extends FormRequest
    */
   public function rules()
   {
+    $categories=Category::all()->pluck('id');
     return [
-      'name' => 'required|string|min:2|max:191'
+      'name' => 'required|string|min:2|max:191',
+      'category_id' => 'nullable|'.Rule::in($categories)
     ];
   }
 }
