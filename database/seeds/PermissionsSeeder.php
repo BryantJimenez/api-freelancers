@@ -41,6 +41,11 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'languages.active']);
         Permission::create(['name' => 'languages.deactive']);
 
+        // Publication Permissions
+        Permission::create(['name' => 'publications.index']);
+        Permission::create(['name' => 'publications.show']);
+        Permission::create(['name' => 'publications.delete']);
+
     	$superadmin=Role::create(['name' => 'Super Admin']);
         $superadmin->givePermissionTo(Permission::all());
         

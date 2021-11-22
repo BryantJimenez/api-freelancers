@@ -32,29 +32,40 @@ Route::group(['prefix' => 'v1'], function() {
 	Route::group(['middleware' => 'auth:api'], function () {
 		// Profile
 		Route::group(['prefix' => 'profile'], function () {
-			Route::get('/', 'Api\User\ProfileController@get');
-			Route::put('/', 'Api\User\ProfileController@update');
-			Route::post('/upgrade', 'Api\User\FreelancerController@upgrade');
-			Route::prefix('freelancer')->group(function () {
-				Route::get('/', 'Api\User\FreelancerController@get');
-				Route::put('/', 'Api\User\FreelancerController@update');
-				Route::delete('/', 'Api\User\FreelancerController@destroy');
-			});
+			Route::get('/', 'Api\Profile\ProfileController@get');
+			Route::put('/', 'Api\Profile\ProfileController@update');
 			Route::prefix('change')->group(function () {
-				Route::post('/password', 'Api\User\ProfileController@changePassword');
-				Route::post('/email', 'Api\User\ProfileController@changeEmail');
+				Route::post('/password', 'Api\Profile\ProfileController@changePassword');
+				Route::post('/email', 'Api\Profile\ProfileController@changeEmail');
+			});
+			// Freelancer Profile
+			Route::post('/upgrade', 'Api\Profile\FreelancerController@upgrade');
+			Route::prefix('freelancer')->group(function () {
+				Route::get('/', 'Api\Profile\FreelancerController@get');
+				Route::put('/', 'Api\Profile\FreelancerController@update');
+				Route::delete('/', 'Api\Profile\FreelancerController@destroy');
+			});
+			// Publications
+			Route::prefix('publications')->group(function () {
+				Route::get('/', 'Api\Profile\PublicationController@index');
+				Route::post('/', 'Api\Profile\PublicationController@store');
+				Route::get('/{publication:id}', 'Api\Profile\PublicationController@show');
+				Route::put('/{publication:id}', 'Api\Profile\PublicationController@update');
+				Route::delete('/{publication:id}', 'Api\Profile\PublicationController@destroy');
+				Route::put('/{publication:id}/activate', 'Api\Profile\PublicationController@activate');
+				Route::put('/{publication:id}/deactivate', 'Api\Profile\PublicationController@deactivate');
 			});
 		});
 
 		// Users
 		Route::group(['prefix' => 'users'], function () {
-			Route::get('/', 'Api\User\UserController@index')->middleware('permission:users.index');
-			Route::post('/', 'Api\User\UserController@store')->middleware('permission:users.create');
-			Route::get('/{user:id}', 'Api\User\UserController@show')->middleware('permission:users.show');
-			Route::put('/{user:id}', 'Api\User\UserController@update')->middleware('permission:users.edit');
-			Route::delete('/{user:id}', 'Api\User\UserController@destroy')->middleware('permission:users.delete');
-			Route::put('/{user:id}/activate', 'Api\User\UserController@activate')->middleware('permission:users.active');
-			Route::put('/{user:id}/deactivate', 'Api\User\UserController@deactivate')->middleware('permission:users.deactive');
+			Route::get('/', 'Api\UserController@index')->middleware('permission:users.index');
+			Route::post('/', 'Api\UserController@store')->middleware('permission:users.create');
+			Route::get('/{user:id}', 'Api\UserController@show')->middleware('permission:users.show');
+			Route::put('/{user:id}', 'Api\UserController@update')->middleware('permission:users.edit');
+			Route::delete('/{user:id}', 'Api\UserController@destroy')->middleware('permission:users.delete');
+			Route::put('/{user:id}/activate', 'Api\UserController@activate')->middleware('permission:users.active');
+			Route::put('/{user:id}/deactivate', 'Api\UserController@deactivate')->middleware('permission:users.deactive');
 		});
 
 		// Categories
@@ -78,8 +89,15 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::put('/{language:id}/activate', 'Api\LanguageController@activate')->middleware('permission:languages.active');
 			Route::put('/{language:id}/deactivate', 'Api\LanguageController@deactivate')->middleware('permission:languages.deactive');
 		});
+
+		// Publications
+		Route::group(['prefix' => 'publications'], function () {
+			Route::get('/', 'Api\PublicationController@index')->middleware('permission:publications.index');
+			Route::get('/{publication:id}', 'Api\PublicationController@show')->middleware('permission:publications.show');
+			Route::delete('/{publication:id}', 'Api\PublicationController@destroy')->middleware('permission:publications.delete');
+		});
 	});
 
 	//////////////////////////////////////// DATA ////////////////////////////////////////////////////
-	Route::get('/countries', 'Api\CountryController@index');
+Route::get('/countries', 'Api\CountryController@index');
 });

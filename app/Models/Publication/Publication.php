@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Publication;
 
+use App\Models\Category;
 use App\Models\Freelancer\Freelancer;
-use App\Models\Publication\Publication;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Category extends Model
+class Publication extends Model
 {
     use SoftDeletes, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'order', 'state', 'category_id'];
+    protected $fillable = ['name', 'slug', 'description', 'content', 'state', 'freelancer_id'];
 
     /**
      * Get the state start.
@@ -34,9 +34,9 @@ class Category extends Model
      */
     public function resolveRouteBinding($value, $field = null)
     {
-        $category=$this->with(['parent', 'childrens'])->where($field, $value)->first();
-        if (!is_null($category)) {
-            return $category;
+        $publication=$this->with(['categories'])->where($field, $value)->first();
+        if (!is_null($publication)) {
+            return $publication;
         }
 
         return abort(404);
@@ -47,19 +47,11 @@ class Category extends Model
         return SlugOptions::create()->generateSlugsFrom('name')->saveSlugsTo('slug')->slugsShouldBeNoLongerThan(191);
     }
 
-    public function parent() {
-        return $this->belongsTo(Category::class, 'category_id');
+    public function freelancer() {
+        return $this->belongsTo(Freelancer::class);
     }
 
-    public function childrens() {
-        return $this->hasMany(Category::class);
-    }
-
-    public function freelancers() {
-        return $this->belongsToMany(Freelancer::class)->withTimestamps();
-    }
-
-    public function publications() {
-        return $this->belongsToMany(Publication::class)->withTimestamps();
+    public function categories() {
+        return $this->belongsToMany(Category::class)->withTimestamps();
     }
 }

@@ -49,6 +49,11 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Profile Publications",
+*	description="User freelancer publications endpoints"
+* )
+*
+* @OA\Tag(
 *	name="Countries",
 *	description="Countries endpoint"
 * )
@@ -61,6 +66,11 @@ use Illuminate\Http\Request;
 * @OA\Tag(
 *	name="Categories",
 *	description="Categories endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Publications",
+*	description="Publications endpoints"
 * )
 *
 * @OA\SecurityScheme(
@@ -123,6 +133,15 @@ class ApiController extends Controller
 			$data=$category->only("id", "name", "slug", "order", "state");
 		}
 
+		return $data;
+	}
+
+	public function dataPublication($publication) {
+		$publication->categories=$publication['categories']->map(function($category) {
+			return $category->only("id", "name", "slug");
+		});
+		$data=$publication->only("id", "name", "slug", "description", "content", "state", "categories");
+		
 		return $data;
 	}
 }

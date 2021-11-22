@@ -18,7 +18,7 @@ class Language extends Model
      */
     public function getStateAttribute($value)
     {
-        return ($value=='1') ? 'Activo' : 'Inactivo';
+        return ($value=='1') ? 'Active' : 'Inactive';
     }
 
     /**

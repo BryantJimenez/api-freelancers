@@ -60,7 +60,7 @@ class User extends Authenticatable
      */
     public function getStateAttribute($value)
     {
-        return ($value=='1') ? 'Activo' : 'Inactivo';
+        return ($value=='1') ? 'Active' : 'Inactive';
     }
 
     /**
