@@ -92,4 +92,8 @@ class User extends Authenticatable
     public function freelancer() {
         return $this->hasOne(Freelancer::class);
     }
+
+    public function favorites() {
+        return $this->hasMany(Favorite::class);
+    }
 }

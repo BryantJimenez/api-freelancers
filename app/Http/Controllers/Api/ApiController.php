@@ -54,6 +54,11 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Favorites",
+*	description="User favorites publications endpoints"
+* )
+*
+* @OA\Tag(
 *	name="Countries",
 *	description="Countries endpoint"
 * )
@@ -141,6 +146,13 @@ class ApiController extends Controller
 			return $category->only("id", "name", "slug");
 		});
 		$data=$publication->only("id", "name", "slug", "description", "content", "state", "categories");
+		
+		return $data;
+	}
+
+	public function dataFavorite($favorite) {
+		$favorite->publication=$this->dataPublication($favorite['publication']);
+		$data=$favorite->only("id", "publication");
 		
 		return $data;
 	}

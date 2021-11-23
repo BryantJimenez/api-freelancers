@@ -44,7 +44,7 @@ class Category extends Model
 
     public function getSlugOptions() : SlugOptions
     {
-        return SlugOptions::create()->generateSlugsFrom('name')->saveSlugsTo('slug')->slugsShouldBeNoLongerThan(191);
+        return SlugOptions::create()->generateSlugsFrom('name')->saveSlugsTo('slug')->slugsShouldBeNoLongerThan(191)->doNotGenerateSlugsOnUpdate();
     }
 
     public function parent() {

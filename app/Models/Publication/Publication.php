@@ -2,6 +2,7 @@
 
 namespace App\Models\Publication;
 
+use App\Models\Favorite;
 use App\Models\Category;
 use App\Models\Freelancer\Freelancer;
 use Illuminate\Database\Eloquent\Model;
@@ -44,7 +45,7 @@ class Publication extends Model
 
     public function getSlugOptions() : SlugOptions
     {
-        return SlugOptions::create()->generateSlugsFrom('name')->saveSlugsTo('slug')->slugsShouldBeNoLongerThan(191);
+        return SlugOptions::create()->generateSlugsFrom('name')->saveSlugsTo('slug')->slugsShouldBeNoLongerThan(191)->doNotGenerateSlugsOnUpdate();
     }
 
     public function freelancer() {
@@ -53,5 +54,9 @@ class Publication extends Model
 
     public function categories() {
         return $this->belongsToMany(Category::class)->withTimestamps();
+    }
+
+    public function favorites() {
+        return $this->hasMany(Favorite::class);
     }
 }

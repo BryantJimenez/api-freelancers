@@ -858,6 +858,116 @@
                 ]
             }
         },
+        "/api/v1/favorites": {
+            "get": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Get favorite publications",
+                "description": "Returns all favorite publications",
+                "operationId": "indexFavorite",
+                "responses": {
+                    "200": {
+                        "description": "Show all favorite publications.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/favorites/{id}": {
+            "post": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Add favorite publication",
+                "description": "Add a favorite publication",
+                "operationId": "storeFavorite",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registered publication.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Favorites"
+                ],
+                "summary": "Delete favorite publication",
+                "description": "Delete a single favorite publication",
+                "operationId": "destroyFavorite",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete favorite publication.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/profile/upgrade": {
             "post": {
                 "tags": [
@@ -2101,6 +2211,10 @@
         {
             "name": "Profile Publications",
             "description": "User freelancer publications endpoints"
+        },
+        {
+            "name": "Favorites",
+            "description": "User favorites publications endpoints"
         },
         {
             "name": "Countries",

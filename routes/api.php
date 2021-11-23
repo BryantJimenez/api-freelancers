@@ -57,6 +57,13 @@ Route::group(['prefix' => 'v1'], function() {
 			});
 		});
 
+		// Favorites
+		Route::group(['prefix' => 'favorites'], function () {
+			Route::get('/', 'Api\Profile\FavoriteController@index');
+			Route::post('/{publication:id}', 'Api\Profile\FavoriteController@store');
+			Route::delete('/{favorite:id}', 'Api\Profile\FavoriteController@destroy');
+		});
+
 		// Users
 		Route::group(['prefix' => 'users'], function () {
 			Route::get('/', 'Api\UserController@index')->middleware('permission:users.index');
