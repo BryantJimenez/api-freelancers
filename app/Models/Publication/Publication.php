@@ -4,6 +4,7 @@ namespace App\Models\Publication;
 
 use App\Models\Favorite;
 use App\Models\Category;
+use App\Models\Proposal;
 use App\Models\Freelancer\Freelancer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -35,7 +36,7 @@ class Publication extends Model
      */
     public function resolveRouteBinding($value, $field = null)
     {
-        $publication=$this->with(['categories'])->where($field, $value)->first();
+        $publication=$this->with(['freelancer.user', 'categories'])->where($field, $value)->first();
         if (!is_null($publication)) {
             return $publication;
         }
@@ -58,5 +59,9 @@ class Publication extends Model
 
     public function favorites() {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function proposals() {
+        return $this->hasMany(Proposal::class);
     }
 }

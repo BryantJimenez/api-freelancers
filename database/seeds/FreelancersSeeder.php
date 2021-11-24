@@ -17,6 +17,11 @@ class FreelancersSeeder extends Seeder
     {
         factory(Freelancer::class)->create(['user_id' => 1]);
 
+        $users=User::where('id', '!=', 1)->get();
+        foreach ($users as $user) {
+            $user->assignRole('User');
+        }
+
         $users=User::where([['id', '!=', 1], ['country_id', '!=', NULL]])->get();
         foreach ($users as $user) {
             factory(Freelancer::class)->create(['user_id' => $user->id]);

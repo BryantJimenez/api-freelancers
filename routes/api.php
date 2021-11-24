@@ -64,6 +64,16 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::delete('/{favorite:id}', 'Api\Profile\FavoriteController@destroy');
 		});
 
+		// Proposals
+		Route::group(['prefix' => 'proposals'], function () {
+			Route::get('/', 'Api\Profile\ProposalController@index');
+			Route::post('/{publication:id}', 'Api\Profile\ProposalController@store');
+			Route::get('/{proposal:id}', 'Api\Profile\ProposalController@show');
+			Route::put('/{proposal:id}', 'Api\Profile\ProposalController@update');
+			Route::put('/{proposal:id}/accept', 'Api\Profile\ProposalController@accept');
+			Route::put('/{proposal:id}/cancel', 'Api\Profile\ProposalController@cancel');
+		});
+
 		// Users
 		Route::group(['prefix' => 'users'], function () {
 			Route::get('/', 'Api\UserController@index')->middleware('permission:users.index');

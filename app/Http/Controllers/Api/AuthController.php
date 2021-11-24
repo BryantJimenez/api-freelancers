@@ -56,14 +56,14 @@ class AuthController extends ApiController
     *   	response=401,
     *   	description="Not authenticated."
     * 	),
+    *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
+    *   ),
     * 	@OA\Response(
     *  		response=422,
     *   	description="Data not valid."
-    * 	),
-	*   @OA\Response(
-	*      	response=403,
-	*      	description="Forbidden"
-	*   )
+    * 	)
 	* )
      **/
 	public function login(ApiLoginRequest $request) {
@@ -185,9 +185,9 @@ class AuthController extends ApiController
             $user=$this->dataUser($user);
             
             return response()->json(['code' => 201, 'status' => 'success', 'message' => 'Successful registration.', 'data' => $user], 201);
-        } else {
-        	return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
         }
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 
     /**
@@ -215,7 +215,40 @@ class AuthController extends ApiController
     * )
     */
     public function logout(Request $request) {
-      $request->user()->token()->revoke();
-      return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The session has been closed successfully.'], 200);
-  }
+        $request->user()->token()->revoke();
+        return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The session has been closed successfully.'], 200);
+    }
+
+    /**
+    * @OA\Post(
+    *   path="/api/v1/auth/password/email",
+    *   tags={"Forgot Password"},
+    *   summary="Forgot password user",
+    *   operationId="forgotPassword",
+    *   @OA\Parameter(
+    *       name="email",
+    *       in="query",
+    *       description="Email of user",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="string"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Recovery password email send.",
+    *       @OA\MediaType(
+    *           mediaType="application/json",
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=422,
+    *       description="Data not valid."
+    *   ),
+    *   @OA\Response(
+    *       response=500,
+    *       description="An error occurred during the process."
+    *   )
+    * )
+     **/
 }

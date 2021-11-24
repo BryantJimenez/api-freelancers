@@ -12,7 +12,7 @@ class Language extends Model
     protected $fillable = ['name', 'code', 'native_name', 'state'];
 
     /**
-     * Get the state start.
+     * Get the state.
      *
      * @return string
      */

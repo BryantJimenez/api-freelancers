@@ -34,6 +34,11 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Forgot Password",
+*	description="Forgot password users endpoint"
+* )
+*
+* @OA\Tag(
 *	name="Users",
 *	description="Users endpoints"
 * )
@@ -56,6 +61,11 @@ use Illuminate\Http\Request;
 * @OA\Tag(
 *	name="Favorites",
 *	description="User favorites publications endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Proposals",
+*	description="Proposals endpoints"
 * )
 *
 * @OA\Tag(
@@ -142,10 +152,12 @@ class ApiController extends Controller
 	}
 
 	public function dataPublication($publication) {
+		$publication->user=(!is_null($publication['freelancer'])) ? $this->dataUser($publication['freelancer']['user']) : [];
 		$publication->categories=$publication['categories']->map(function($category) {
 			return $category->only("id", "name", "slug");
 		});
-		$data=$publication->only("id", "name", "slug", "description", "content", "state", "categories");
+
+		$data=$publication->only("id", "name", "slug", "description", "content", "state", "user", "categories");
 		
 		return $data;
 	}
@@ -153,6 +165,16 @@ class ApiController extends Controller
 	public function dataFavorite($favorite) {
 		$favorite->publication=$this->dataPublication($favorite['publication']);
 		$data=$favorite->only("id", "publication");
+		
+		return $data;
+	}
+
+	public function dataProposal($proposal) {
+		$proposal->end=(!is_null($proposal->end)) ? $proposal->end : '';
+		$proposal->owner=$this->dataUser($proposal['owner']);
+		$proposal->receiver=$this->dataUser($proposal['receiver']);
+		$proposal->publication=$this->dataPublication($proposal['publication']);
+		$data=$proposal->only("id", "amount", "start", "end", "content", "state", "owner", "receiver", "publication");
 		
 		return $data;
 	}

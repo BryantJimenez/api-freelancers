@@ -16,7 +16,7 @@ class Category extends Model
     protected $fillable = ['name', 'slug', 'order', 'state', 'category_id'];
 
     /**
-     * Get the state start.
+     * Get the state.
      *
      * @return string
      */

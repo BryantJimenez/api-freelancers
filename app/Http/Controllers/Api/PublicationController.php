@@ -40,7 +40,7 @@ class PublicationController extends ApiController
     * )
     */
     public function index() {
-    	$publications=Publication::with(['categories'])->get()->map(function($publication) {
+    	$publications=Publication::with(['freelancer.user', 'categories'])->get()->map(function($publication) {
     		return $this->dataPublication($publication);
     	});
 

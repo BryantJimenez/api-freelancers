@@ -54,7 +54,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the state start.
+     * Get the state.
      *
      * @return string
      */
@@ -95,5 +95,13 @@ class User extends Authenticatable
 
     public function favorites() {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function my_proposals() {
+        return $this->hasMany(Proposal::class, 'owner_id');
+    }
+
+    public function received_proposals() {
+        return $this->hasMany(Proposal::class, 'receiver_id');
     }
 }
