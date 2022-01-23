@@ -46,6 +46,14 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'publications.show']);
         Permission::create(['name' => 'publications.delete']);
 
+        // Chat Permissions
+        Permission::create(['name' => 'chats.active']);
+        Permission::create(['name' => 'chats.deactive']);
+
+        // Setting Permissions
+        Permission::create(['name' => 'settings.index']);
+        Permission::create(['name' => 'settings.edit']);
+
     	$superadmin=Role::create(['name' => 'Super Admin']);
         $superadmin->givePermissionTo(Permission::all());
         
@@ -53,7 +61,6 @@ class PermissionsSeeder extends Seeder
     	$admin->givePermissionTo(Permission::all());
 
         $user=Role::create(['name' => 'User']);
-        $user->givePermissionTo(Permission::all());
 
     	$user=User::find(1);
     	$user->assignRole('Super Admin');

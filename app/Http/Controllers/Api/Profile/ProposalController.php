@@ -37,7 +37,7 @@ class ProposalController extends ApiController
     * )
     */
     public function index() {
-    	$proposals=Proposal::with(['owner', 'receiver', 'publication.categories', 'publication.freelancer.user'])->where('owner_id', Auth::id())->orWhere('receiver_id', Auth::id())->get()->map(function($proposal) {
+    	$proposals=Proposal::with(['owner', 'receiver', 'chat_room.publication.categories', 'chat_room.publication.freelancer.user'])->where('owner_id', Auth::id())->orWhere('receiver_id', Auth::id())->get()->map(function($proposal) {
     		return $this->dataProposal($proposal);
     	});
     	return response()->json(['code' => 200, 'status' => 'success', 'data' => $proposals], 200);
@@ -57,7 +57,7 @@ class ProposalController extends ApiController
     *   @OA\Parameter(
     *       name="id",
     *       in="path",
-    *       description="Publication ID",
+    *       description="Chat ID",
     *       required=true,
     *       @OA\Schema(
     *           type="integer"
@@ -132,12 +132,12 @@ class ProposalController extends ApiController
     *   )
     * )
     */
- 	public function store(ApiProposalStoreRequest $request, Publication $publication) {
- 		$data=array('start' => request('start'), 'end' => request('end'), 'content' => request('content'), 'amount' => request('amount'), 'owner_id' => Auth::id(), 'receiver_id' => request('receiver_id'), 'publication_id' => $publication->id);
+ 	public function store(ApiProposalStoreRequest $request, ChatRoom $chat) {
+ 		$data=array('start' => request('start'), 'end' => request('end'), 'content' => request('content'), 'amount' => request('amount'), 'owner_id' => Auth::id(), 'receiver_id' => request('receiver_id'), 'chat_room_id' => $chat->id);
  		$proposal=Proposal::create($data);
 
  		if ($proposal) {
- 			$proposal=Proposal::with(['owner', 'receiver', 'publication'])->where('id', $proposal->id)->first();
+ 			$proposal=Proposal::with(['owner', 'receiver', 'chat_room.publication'])->where('id', $proposal->id)->first();
  			$proposal=$this->dataProposal($proposal);
  			return response()->json(['code' => 201, 'status' => 'success', 'message' => 'The proposal has been successfully send.', 'data' => $proposal], 201);
  		}
@@ -283,7 +283,7 @@ class ProposalController extends ApiController
         $data=array('start' => request('start'), 'end' => request('end'), 'content' => request('content'), 'amount' => request('amount'));
         $proposal->fill($data)->save();
         if ($proposal) {
-            $proposal=Proposal::with(['owner', 'receiver', 'publication'])->where('id', $proposal->id)->first();
+            $proposal=Proposal::with(['owner', 'receiver', 'chat_room.publication'])->where('id', $proposal->id)->first();
             $proposal=$this->dataProposal($proposal);
             return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The proposal has been edited successfully.', 'data' => $proposal], 200);
         }

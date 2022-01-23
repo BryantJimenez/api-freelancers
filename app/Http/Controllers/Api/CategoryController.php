@@ -259,9 +259,9 @@ class CategoryController extends ApiController
             $category=Category::with(['parent', 'childrens'])->where('id', $category->id)->first();
             $category=$this->dataCategory($category);
             return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The category has been edited successfully.', 'data' => $category], 200);
-        } else {
-            return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
         }
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 
     /**
@@ -314,9 +314,9 @@ class CategoryController extends ApiController
     	$category->delete();
     	if ($category) {
     		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The category has been successfully removed.'], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 
     /**
@@ -369,10 +369,10 @@ class CategoryController extends ApiController
     	if ($category) {
             $category=$this->dataCategory($category);
             return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The category has been successfully deactivated.', 'data' => $category], 200);
-        } else {
-          return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
-      }
-  }
+        }
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
+    }
 
     /**
     *
@@ -424,8 +424,8 @@ class CategoryController extends ApiController
     	if ($category) {
     		$category=$this->dataCategory($category);
     		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The category has been successfully activated.', 'data' => $category], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 }

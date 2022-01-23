@@ -59,6 +59,11 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Profile Chats",
+*	description="User chats endpoints"
+* )
+*
+* @OA\Tag(
 *	name="Favorites",
 *	description="User favorites publications endpoints"
 * )
@@ -86,6 +91,16 @@ use Illuminate\Http\Request;
 * @OA\Tag(
 *	name="Publications",
 *	description="Publications endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Chats",
+*	description="Chats endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Settings",
+*	description="Settings endpoints"
 * )
 *
 * @OA\SecurityScheme(
@@ -173,9 +188,35 @@ class ApiController extends Controller
 		$proposal->end=(!is_null($proposal->end)) ? $proposal->end : '';
 		$proposal->owner=$this->dataUser($proposal['owner']);
 		$proposal->receiver=$this->dataUser($proposal['receiver']);
-		$proposal->publication=$this->dataPublication($proposal['publication']);
+		$proposal->publication=$this->dataPublication($proposal['chat_room']['publication']);
 		$data=$proposal->only("id", "amount", "start", "end", "content", "state", "owner", "receiver", "publication");
 		
+		return $data;
+	}
+
+	public function dataChat($chat) {
+		$chat->publication=$this->dataPublication($chat['publication']);
+		$chat->members=$chat['users']->map(function($user) {
+			return $this->dataUser($user);
+		});
+		$data=$chat->only("id", "name", "slug", "state", "publication", "members");
+		
+		return $data;
+	}
+
+	public function dataMessage($message) {
+		$message->user=$this->dataUser($message['user']);
+		$data=$message->only("id", "message", "read", "user");
+		
+		return $data;
+	}
+
+	public function dataSetting($setting) {
+		$setting->stripe_public=(!is_null($setting->stripe_public)) ? $setting->stripe_public : "";
+		$setting->stripe_secret=(!is_null($setting->stripe_secret)) ? $setting->stripe_secret : "";
+		$setting->paypal_public=(!is_null($setting->paypal_public)) ? $setting->paypal_public : "";
+		$setting->paypal_secret=(!is_null($setting->paypal_secret)) ? $setting->paypal_secret : "";
+		$data=$setting->only("id", "stripe_public", "stripe_secret", "paypal_public", "paypal_secret");
 		return $data;
 	}
 }

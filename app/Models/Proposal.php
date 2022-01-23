@@ -10,7 +10,7 @@ class Proposal extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['start', 'end', 'content', 'amount', 'state', 'receiver_id', 'owner_id', 'publication_id'];
+    protected $fillable = ['start', 'end', 'content', 'amount', 'state', 'receiver_id', 'owner_id', 'chat_room_id'];
 
     /**
      * Get the state.
@@ -36,7 +36,7 @@ class Proposal extends Model
      */
     public function resolveRouteBinding($value, $field = null)
     {
-        $proposal=$this->with(['owner', 'receiver', 'publication.categories', 'publication.freelancer.user'])->where($field, $value)->first();
+        $proposal=$this->with(['owner', 'receiver', 'chat_room.publication.categories', 'chat_room.publication.freelancer.user'])->where($field, $value)->first();
         if (!is_null($proposal)) {
             return $proposal;
         }
@@ -52,8 +52,8 @@ class Proposal extends Model
         return $this->belongsTo(User::class, 'owner_id');
     }
 
-    public function publication() {
-        return $this->belongsTo(Publication::class);
+    public function chat_room() {
+        return $this->belongsTo(ChatRoom::class);
     }
 
     public function project() {

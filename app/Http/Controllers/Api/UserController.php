@@ -44,15 +44,15 @@ class UserController extends ApiController
     * )
     */
     public function index() {
-		$users=User::with(['roles'])->get()->map(function($user) {
-			return $this->dataUser($user);
-		});
+        $users=User::with(['roles'])->get()->map(function($user) {
+            return $this->dataUser($user);
+        });
 
         $page=Paginator::resolveCurrentPage('page');
         $pagination=new LengthAwarePaginator($users, $total=count($users), $perPage=15, $page, ['path' => Paginator::resolveCurrentPath(), 'pageName' => 'page']);
         $pagination=Arr::collapse([$pagination->toArray(), ['code' => 200, 'status' => 'success']]);
 
-    	return response()->json($pagination, 200);
+        return response()->json($pagination, 200);
     }
 
     /**
@@ -123,10 +123,11 @@ class UserController extends ApiController
     *   @OA\Parameter(
     *       name="type",
     *       in="query",
-    *       description="Type of user (Super Admin, Administrator, User)",
+    *       description="Type of user",
     *       required=true,
     *       @OA\Schema(
-    *           type="string"
+    *           type="string",
+    *           enum={"Super Admin", "Administrator", "User"}
     *       )
     *   ),
     *   @OA\Parameter(
@@ -173,14 +174,14 @@ class UserController extends ApiController
     		if (!is_null(request('photo'))) {
     			$user->fill(['photo' => request('photo')])->save();
     		}
-    		// SendEmailRegister::dispatch($user->slug);
+    		SendEmailRegister::dispatch($user->slug);
             $user=User::with(['roles'])->where('id', $user->id)->first();
             $user=$this->dataUser($user);
 
             return response()->json(['code' => 201, 'status' => 'success', 'message' => 'The user has been successfully registered.', 'data' => $user], 201);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
-    	}
+        }
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 
     /**
@@ -270,10 +271,11 @@ class UserController extends ApiController
     *   @OA\Parameter(
     *       name="type",
     *       in="query",
-    *       description="Type of user (Super Admin, Administrator, User)",
+    *       description="Type of user",
     *       required=false,
     *       @OA\Schema(
-    *           type="string"
+    *           type="string",
+    *           enum={"Super Admin", "Administrator", "User"}
     *       )
     *   ),
     *   @OA\Parameter(
@@ -322,12 +324,12 @@ class UserController extends ApiController
     			$user->fill(['photo' => request('photo')])->save();
     		}
             $user=User::with(['roles'])->where('id', $user->id)->first();
-    		$user=$this->dataUser($user);
+            $user=$this->dataUser($user);
 
-    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been edited successfully.', 'data' => $user], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
-    	}
+            return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been edited successfully.', 'data' => $user], 200);
+        }
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 
     /**
@@ -380,9 +382,9 @@ class UserController extends ApiController
     	$user->delete();
     	if ($user) {
     		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been successfully removed.'], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 
     /**
@@ -435,9 +437,9 @@ class UserController extends ApiController
     	if ($user) {
     		$user=$this->dataUser($user);
     		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been successfully deactivated.', 'data' => $user], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
+    	
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 
     /**
@@ -490,8 +492,8 @@ class UserController extends ApiController
     	if ($user) {
     		$user=$this->dataUser($user);
     		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The user has been successfully activated.', 'data' => $user], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     	}
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 }

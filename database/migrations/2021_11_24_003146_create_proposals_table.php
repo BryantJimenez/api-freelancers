@@ -22,14 +22,14 @@ class CreateProposalsTable extends Migration
             $table->enum('state', [0, 1, 2])->default(2);
             $table->bigInteger('owner_id')->unsigned()->nullable();
             $table->bigInteger('receiver_id')->unsigned()->nullable();
-            $table->bigInteger('publication_id')->unsigned()->nullable();
+            $table->bigInteger('chat_room_id')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();
 
             #Relations
             $table->foreign('owner_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
             $table->foreign('receiver_id')->references('id')->on('users')->onDelete('set null')->onUpdate('cascade');
-            $table->foreign('publication_id')->references('id')->on('publications')->onDelete('set null')->onUpdate('cascade');
+            $table->foreign('chat_room_id')->references('id')->on('chat_room')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 

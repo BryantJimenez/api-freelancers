@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Chat;
 
-use App\Models\Freelancer\Freelancer;
+use App\Models\User;
 use App\Models\Publication\Publication;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Category extends Model
+class ChatRoom extends Model
 {
-    use SoftDeletes, HasSlug;
+	use SoftDeletes, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'order', 'state', 'category_id'];
+    protected $table = 'chat_room';
+
+    protected $fillable = ['name', 'slug', 'state', 'publication_id'];
 
     /**
      * Get the state.
@@ -39,7 +41,7 @@ class Category extends Model
      */
     public function resolveRouteBinding($value, $field = null)
     {
-        $category=$this->with(['parent', 'childrens'])->where($field, $value)->first();
+        $category=$this->with(['publication', 'users', 'messages'])->where($field, $value)->first();
         if (!is_null($category)) {
             return $category;
         }
@@ -52,19 +54,19 @@ class Category extends Model
         return SlugOptions::create()->generateSlugsFrom('name')->saveSlugsTo('slug')->slugsShouldBeNoLongerThan(191)->doNotGenerateSlugsOnUpdate();
     }
 
-    public function parent() {
-        return $this->belongsTo(Category::class, 'category_id');
+    public function publication() {
+        return $this->belongsTo(Publication::class);
     }
 
-    public function childrens() {
-        return $this->hasMany(Category::class);
+    public function users() {
+        return $this->belongsToMany(User::class, 'room_user')->withTimestamps();
     }
 
-    public function freelancers() {
-        return $this->belongsToMany(Freelancer::class)->withTimestamps();
+    public function proposals() {
+        return $this->hasMany(Proposal::class);
     }
 
-    public function publications() {
-        return $this->belongsToMany(Publication::class)->withTimestamps();
+    public function messages() {
+        return $this->hasMany(ChatMessage::class);
     }
 }

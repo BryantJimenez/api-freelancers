@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Models\Freelancer\Freelancer;
+use App\Models\Chat\ChatRoom;
+use App\Models\Chat\ChatMessage;
+use App\Models\Payment\Payment;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -12,10 +15,11 @@ use App\Notifications\ResetPasswordNotification;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Laravel\Passport\HasApiTokens;
+use Laravel\Cashier\Billable;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, HasRoles, SoftDeletes, HasSlug;
+    use Notifiable, HasApiTokens, HasRoles, SoftDeletes, HasSlug, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -60,7 +64,12 @@ class User extends Authenticatable
      */
     public function getStateAttribute($value)
     {
-        return ($value=='1') ? 'Active' : 'Inactive';
+        if ($value=='1') {
+            return 'Active';
+        } elseif ($value=='0') {
+            return 'Inactive';
+        }
+        return 'Unknown';
     }
 
     /**
@@ -103,5 +112,17 @@ class User extends Authenticatable
 
     public function received_proposals() {
         return $this->hasMany(Proposal::class, 'receiver_id');
+    }
+
+    public function chats() {
+        return $this->belongsToMany(ChatRoom::class, 'room_user')->withTimestamps();
+    }
+
+    public function messages() {
+        return $this->hasMany(ChatMessage::class);
+    }
+
+    public function payments() {
+        return $this->hasMany(Payment::class);
     }
 }

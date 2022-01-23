@@ -112,12 +112,12 @@ class ProfileController extends ApiController
     			$user->fill(['photo' => request('photo')])->save();
     		}
             $user=User::with(['roles'])->where('id', $user->id)->first();
-    		$user=$this->dataUser($user);
+            $user=$this->dataUser($user);
 
-    		return response()->json(['code' => 200, 'status' => 'success', 'message' => 'User profile updated successfully.', 'data' => $user], 200);
-    	} else {
-    		return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
-    	}
+            return response()->json(['code' => 200, 'status' => 'success', 'message' => 'User profile updated successfully.', 'data' => $user], 200);
+        }
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
     }
 
     /**
@@ -182,11 +182,11 @@ class ProfileController extends ApiController
         $user->fill(['password' => Hash::make(request('new_password'))])->save();
 
         if ($user) {
-          return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Password changed successfully.'], 200);
-      } else {
-          return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
-      }
-  }
+            return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Password changed successfully.'], 200);
+        }
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
+    }
 
     /**
     *
@@ -250,9 +250,9 @@ class ProfileController extends ApiController
         $user->fill(['email' => request('new_email')])->save();
 
         if ($user) {
-          return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Email changed successfully.'], 200);
-      } else {
-          return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
-      }
-  }
+            return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Email changed successfully.'], 200);
+        }
+
+        return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
+    }
 }

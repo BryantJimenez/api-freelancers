@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'v1'], function() {
+	//////////////////////////////////////// DATA ////////////////////////////////////////////////////
+	Route::get('/countries', 'Api\CountryController@index');
+	
 	/////////////////////////////////////// AUTH ////////////////////////////////////////////////////
 	Route::group(['prefix' => 'auth'], function() {
 		Route::prefix('login')->group(function () {
@@ -74,6 +77,15 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::put('/{proposal:id}/cancel', 'Api\Profile\ProposalController@cancel');
 		});
 
+		// Chats
+		Route::group(['prefix' => 'chats'], function () {
+			Route::get('/', 'Api\Profile\ChatController@index');
+			Route::post('/{publication:id}', 'Api\Profile\ChatController@store');
+			Route::get('/{chat:id}', 'Api\Profile\ChatController@show');
+			Route::get('/{chat:id}/messages', 'Api\Profile\ChatController@messages');
+			Route::post('/{chat:id}/message', 'Api\Profile\ChatController@message');
+		});
+
 		// Users
 		Route::group(['prefix' => 'users'], function () {
 			Route::get('/', 'Api\UserController@index')->middleware('permission:users.index');
@@ -113,8 +125,33 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::get('/{publication:id}', 'Api\PublicationController@show')->middleware('permission:publications.show');
 			Route::delete('/{publication:id}', 'Api\PublicationController@destroy')->middleware('permission:publications.delete');
 		});
+
+		// Chats
+		Route::group(['prefix' => 'chats'], function () {
+			Route::put('/{chat:id}/activate', 'Api\ChatController@activate')->middleware('permission:chats.active');
+			Route::put('/{chat:id}/deactivate', 'Api\ChatController@deactivate')->middleware('permission:chats.deactive');
+		});
+
+		// Settings
+		Route::group(['prefix' => 'settings'], function () {
+			Route::get('/', 'Api\SettingController@get')->middleware('permission:settings.index');
+			Route::put('/', 'Api\SettingController@update')->middleware('permission:settings.edit');
+		});
+
+
+
+
+
+
+
+		// Payments
+		Route::group(['prefix' => 'payments'], function () {
+			Route::get('/', 'Api\SettingController@payment');
+		});
 	});
 
-	//////////////////////////////////////// DATA ////////////////////////////////////////////////////
-Route::get('/countries', 'Api\CountryController@index');
+	// Payments
+	Route::group(['prefix' => 'payments'], function () {
+		Route::get('/success', 'Api\SettingController@success');
+	});
 });

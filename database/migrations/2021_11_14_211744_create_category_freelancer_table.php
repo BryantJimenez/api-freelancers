@@ -31,6 +31,6 @@ class CreateCategoryFreelancerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('freelancer_specialization');
+        Schema::dropIfExists('category_freelancer');
     }
 }

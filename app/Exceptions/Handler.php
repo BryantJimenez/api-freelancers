@@ -77,6 +77,28 @@ class Handler extends ExceptionHandler
             }
         }
 
+        if ($request->ajax()) {
+            if ($exception instanceof MethodNotAllowedHttpException) {
+                return response()->json(['code' => 405, 'status' => false, 'message' => 'The method specified in the request is not valid.'], 405);
+            }
+
+            if ($exception instanceof NotFoundHttpException) {
+                return response()->json(['code' => 404, 'status' => false, 'message' => 'No results found.'], 404);
+            }
+
+            if ($exception instanceof AuthenticationException) {
+                return response()->json(['code' => 401, 'status' => false, 'message' => 'Not authenticated.'], 401);
+            }
+
+            if ($exception instanceof UnauthorizedException) {
+                return response()->json(['code' => 403, 'status' => false, 'message' => 'Forbidden.'], 403);
+            }
+
+            if ($exception instanceof ValidationException) {
+                return response()->json(['code' => 422, 'status' => false, 'message' => 'The data sent was not valid.', 'errors' => $exception->validator->getMessageBag()], 422);
+            }
+        }
+
         return parent::render($request, $exception);
     }
 }

@@ -8,7 +8,6 @@ use App\Http\Requests\Api\Auth\ApiLoginRequest;
 use App\Http\Requests\Api\Auth\ApiRegisterRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Socialite\Facades\Socialite;
 use Carbon\Carbon;
 use Auth;
 
@@ -182,6 +181,7 @@ class AuthController extends ApiController
 
         if ($user) {
             $user->assignRole('User');
+            $user=User::with(['roles'])->where('id', $user->id)->first();
             $user=$this->dataUser($user);
             
             return response()->json(['code' => 201, 'status' => 'success', 'message' => 'Successful registration.', 'data' => $user], 201);

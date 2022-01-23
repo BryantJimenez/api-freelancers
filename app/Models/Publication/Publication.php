@@ -6,6 +6,7 @@ use App\Models\Favorite;
 use App\Models\Category;
 use App\Models\Proposal;
 use App\Models\Freelancer\Freelancer;
+use App\Models\Chat\ChatRoom;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
@@ -24,7 +25,12 @@ class Publication extends Model
      */
     public function getStateAttribute($value)
     {
-        return ($value=='1') ? 'Active' : 'Inactive';
+        if ($value=='1') {
+            return 'Active';
+        } elseif ($value=='0') {
+            return 'Inactive';
+        }
+        return 'Unknown';
     }
 
     /**
@@ -61,7 +67,7 @@ class Publication extends Model
         return $this->hasMany(Favorite::class);
     }
 
-    public function proposals() {
-        return $this->hasMany(Proposal::class);
+    public function chats() {
+        return $this->hasMany(ChatRoom::class);
     }
 }

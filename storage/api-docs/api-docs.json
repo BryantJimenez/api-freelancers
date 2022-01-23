@@ -533,6 +533,98 @@
                 ]
             }
         },
+        "/api/v1/chats/{id}/deactivate": {
+            "put": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Deactivate chat",
+                "description": "Deactivate a single chat",
+                "operationId": "deactivateChat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deactivate chat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats/{id}/activate": {
+            "put": {
+                "tags": [
+                    "Chats"
+                ],
+                "summary": "Activate chat",
+                "description": "Activate a single chat",
+                "operationId": "activateChat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Activate chat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/countries": {
             "get": {
                 "tags": [
@@ -880,6 +972,214 @@
                     },
                     "404": {
                         "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats": {
+            "get": {
+                "tags": [
+                    "Profile Chats"
+                ],
+                "summary": "Get chats",
+                "description": "Returns all chats",
+                "operationId": "indexChat",
+                "responses": {
+                    "200": {
+                        "description": "Show all chats.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats/{id}": {
+            "get": {
+                "tags": [
+                    "Profile Chats"
+                ],
+                "summary": "Get chat",
+                "description": "Returns a single chat",
+                "operationId": "showChat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show chat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Profile Chats"
+                ],
+                "summary": "Register chat",
+                "description": "Create a new chat",
+                "operationId": "storeChat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Publication ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Registered chat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats/{id}/messages": {
+            "get": {
+                "tags": [
+                    "Profile Chats"
+                ],
+                "summary": "Get chat messages",
+                "description": "Returns messages of a single chat",
+                "operationId": "getChatMessage",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show chat messages.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats/{id}/message": {
+            "post": {
+                "tags": [
+                    "Profile Chats"
+                ],
+                "summary": "Send new message",
+                "description": "Send a new message in a chat",
+                "operationId": "storeChatMessage",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "message",
+                        "in": "query",
+                        "description": "New Message",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New message.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
                     },
                     "500": {
                         "description": "An error occurred during the process."
@@ -1500,7 +1800,7 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Publication ID",
+                        "description": "Chat ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -2140,6 +2440,106 @@
                 ]
             }
         },
+        "/api/v1/settings": {
+            "get": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Get settings",
+                "description": "Returns all settings",
+                "operationId": "indexSetting",
+                "responses": {
+                    "200": {
+                        "description": "Show all settings.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Settings"
+                ],
+                "summary": "Update settings",
+                "description": "Update settings",
+                "operationId": "updateSetting",
+                "parameters": [
+                    {
+                        "name": "stripe_public",
+                        "in": "query",
+                        "description": "Stripe public key",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "stripe_secret",
+                        "in": "query",
+                        "description": "Stripe secret key",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "paypal_public",
+                        "in": "query",
+                        "description": "Paypal public key",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "paypal_secret",
+                        "in": "query",
+                        "description": "Paypal secret key",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update settings.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/users": {
             "get": {
                 "tags": [
@@ -2233,10 +2633,15 @@
                     {
                         "name": "type",
                         "in": "query",
-                        "description": "Type of user (Super Admin, Administrator, User)",
+                        "description": "Type of user",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "Super Admin",
+                                "Administrator",
+                                "User"
+                            ]
                         }
                     },
                     {
@@ -2356,10 +2761,15 @@
                     {
                         "name": "type",
                         "in": "query",
-                        "description": "Type of user (Super Admin, Administrator, User)",
+                        "description": "Type of user",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "Super Admin",
+                                "Administrator",
+                                "User"
+                            ]
                         }
                     },
                     {
@@ -2581,6 +2991,10 @@
             "description": "User freelancer publications endpoints"
         },
         {
+            "name": "Profile Chats",
+            "description": "User chats endpoints"
+        },
+        {
             "name": "Favorites",
             "description": "User favorites publications endpoints"
         },
@@ -2603,6 +3017,14 @@
         {
             "name": "Publications",
             "description": "Publications endpoints"
+        },
+        {
+            "name": "Chats",
+            "description": "Chats endpoints"
+        },
+        {
+            "name": "Settings",
+            "description": "Settings endpoints"
         }
     ],
     "security": [
