@@ -19,9 +19,10 @@ class CreatePaymentsTable extends Migration
             $table->float('total', 10, 2)->default(0.00)->unsigned();
             $table->float('fee', 10, 2)->default(0.00)->unsigned();
             $table->float('balance', 10, 2)->default(0.00)->unsigned();
-            $table->enum('method', [1])->default(1);
+            $table->enum('method', [1, 2])->default(1);
+            $table->enum('type', [1, 2])->default(1);
             $table->enum('state', [0, 1, 2])->default(2);
-            $table->string('currency')->default('usd');
+            $table->string('currency')->default('USD');
             $table->bigInteger('user_id')->unsigned()->nullable();
             $table->timestamps();
             $table->softDeletes();

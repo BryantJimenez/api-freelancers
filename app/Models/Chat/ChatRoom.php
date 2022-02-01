@@ -3,6 +3,7 @@
 namespace App\Models\Chat;
 
 use App\Models\User;
+use App\Models\Proposal;
 use App\Models\Publication\Publication;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

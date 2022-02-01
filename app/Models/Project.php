@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Payment\Payment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -9,7 +10,7 @@ class Project extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['price', 'state', 'pay_state', 'proposal_id'];
+    protected $fillable = ['start', 'end', 'content', 'amount', 'state', 'pay_state', 'user_id', 'employer_id', 'proposal_id', 'payment_id'];
 
     /**
      * Get the state.
@@ -50,7 +51,7 @@ class Project extends Model
      */
     public function resolveRouteBinding($value, $field = null)
     {
-        $project=$this->where($field, $value)->first();
+        $project=$this->with(['user', 'employer', 'proposal', 'payment'])->where($field, $value)->first();
         if (!is_null($project)) {
             return $project;
         }
@@ -58,7 +59,19 @@ class Project extends Model
         return abort(404);
     }
 
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function employer() {
+        return $this->belongsTo(User::class, 'employer_id');
+    }
+
     public function proposal() {
         return $this->belongsTo(Proposal::class);
+    }
+
+    public function payment() {
+        return $this->belongsTo(Payment::class);
     }
 }

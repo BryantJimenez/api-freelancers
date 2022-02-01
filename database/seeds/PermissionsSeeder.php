@@ -50,6 +50,18 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'chats.active']);
         Permission::create(['name' => 'chats.deactive']);
 
+        // Proposal Permissions
+        Permission::create(['name' => 'proposals.index']);
+        Permission::create(['name' => 'proposals.show']);
+
+        // Project Permissions
+        Permission::create(['name' => 'projects.index']);
+        Permission::create(['name' => 'projects.show']);
+
+        // Payment Permissions
+        Permission::create(['name' => 'payments.index']);
+        Permission::create(['name' => 'payments.show']);
+
         // Setting Permissions
         Permission::create(['name' => 'settings.index']);
         Permission::create(['name' => 'settings.edit']);

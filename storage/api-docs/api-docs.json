@@ -984,6 +984,204 @@
                 ]
             }
         },
+        "/api/v1/payments": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Get payments",
+                "description": "Returns all payments",
+                "operationId": "indexPayment",
+                "responses": {
+                    "200": {
+                        "description": "Show all payments.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/payments/{id}": {
+            "get": {
+                "tags": [
+                    "Payments"
+                ],
+                "summary": "Get payment",
+                "description": "Returns a single payment",
+                "operationId": "showPayment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show payment.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/wallet": {
+            "post": {
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "Add money",
+                "description": "Add money in wallet",
+                "operationId": "storeWallet",
+                "parameters": [
+                    {
+                        "name": "amount",
+                        "in": "query",
+                        "description": "Amount of payment",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "method",
+                        "in": "query",
+                        "description": "Method of payment (1=Stripe, 2=PayPal)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "1",
+                                "2"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "stripe_token",
+                        "in": "query",
+                        "description": "Stripe token of payment (It is required if paying with Stripe)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "url_success",
+                        "in": "query",
+                        "description": "Url success of PayPal",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "url_cancel",
+                        "in": "query",
+                        "description": "Url cancel of PayPal",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Add money in wallet.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/wallet/success": {
+            "get": {
+                "tags": [
+                    "Wallet"
+                ],
+                "summary": "Complete pay",
+                "description": "Complete pay in wallet with PayPal",
+                "operationId": "successWallet",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "description": "Token of order of PayPal",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pay with PayPal complete.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/chats": {
             "get": {
                 "tags": [
@@ -1039,9 +1237,6 @@
                     "401": {
                         "description": "Not authenticated."
                     },
-                    "403": {
-                        "description": "Forbidden."
-                    },
                     "404": {
                         "description": "No results found."
                     }
@@ -1079,6 +1274,9 @@
                     },
                     "401": {
                         "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
                     },
                     "422": {
                         "description": "Data not valid."
@@ -1122,9 +1320,6 @@
                     },
                     "401": {
                         "description": "Not authenticated."
-                    },
-                    "403": {
-                        "description": "Forbidden."
                     },
                     "404": {
                         "description": "No results found."
@@ -1175,14 +1370,51 @@
                     "401": {
                         "description": "Not authenticated."
                     },
-                    "403": {
-                        "description": "Forbidden."
-                    },
                     "422": {
                         "description": "Data not valid."
                     },
                     "500": {
                         "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/chats/{id}/read": {
+            "get": {
+                "tags": [
+                    "Profile Chats"
+                ],
+                "summary": "Read chat messages",
+                "description": "Read messages of a single chat",
+                "operationId": "readChatMessage",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Read chat messages.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "404": {
+                        "description": "No results found."
                     }
                 },
                 "security": [
@@ -1452,6 +1684,78 @@
                 ]
             }
         },
+        "/api/v1/profile/payments": {
+            "get": {
+                "tags": [
+                    "Profile Payments"
+                ],
+                "summary": "Get payments",
+                "description": "Returns all payments",
+                "operationId": "indexProfilePayment",
+                "responses": {
+                    "200": {
+                        "description": "Show all payments.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/payments/{id}": {
+            "get": {
+                "tags": [
+                    "Profile Payments"
+                ],
+                "summary": "Get payment",
+                "description": "Returns a single payment",
+                "operationId": "showProfilePayment",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show payment.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/profile": {
             "get": {
                 "tags": [
@@ -1641,14 +1945,394 @@
                 ]
             }
         },
-        "/api/v1/proposals": {
+        "/api/v1/profile/projects": {
             "get": {
                 "tags": [
-                    "Proposals"
+                    "Profile Projects"
+                ],
+                "summary": "Get projects",
+                "description": "Returns all projects",
+                "operationId": "indexProfileProject",
+                "responses": {
+                    "200": {
+                        "description": "Show all projects.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/projects/{id}": {
+            "get": {
+                "tags": [
+                    "Profile Projects"
+                ],
+                "summary": "Get project",
+                "description": "Returns a single project",
+                "operationId": "showProfileProject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID project",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show project.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Profile Projects"
+                ],
+                "summary": "Update project",
+                "description": "Update a single project",
+                "operationId": "updateProfileProject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID project",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "start",
+                        "in": "query",
+                        "description": "Date start of project, format Y-m-d",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "end",
+                        "in": "query",
+                        "description": "Date end of project, format Y-m-d",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "amount",
+                        "in": "query",
+                        "description": "Amount of project",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "double"
+                        }
+                    },
+                    {
+                        "name": "content",
+                        "in": "query",
+                        "description": "Content of project",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update project.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/projects/{id}/cancel": {
+            "put": {
+                "tags": [
+                    "Profile Projects"
+                ],
+                "summary": "Cancel project",
+                "description": "Cancel a single project",
+                "operationId": "cancelProfileProject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID project",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cancel project.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/projects/{id}/finalize": {
+            "put": {
+                "tags": [
+                    "Profile Projects"
+                ],
+                "summary": "Finalize project",
+                "description": "Finalize a single project",
+                "operationId": "finalizeProfileProject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID project",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Finalize project.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/projects/{id}/pay": {
+            "post": {
+                "tags": [
+                    "Profile Projects"
+                ],
+                "summary": "Pay project",
+                "description": "Pay project",
+                "operationId": "payProfileProject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID project",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "method",
+                        "in": "query",
+                        "description": "Method of payment (1=Stripe, 2=PayPal, 3=Wallet)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "1",
+                                "2",
+                                "3"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "stripe_token",
+                        "in": "query",
+                        "description": "Stripe token of payment (It is required if paying with Stripe)",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "url_success",
+                        "in": "query",
+                        "description": "Url success of PayPal",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "url_cancel",
+                        "in": "query",
+                        "description": "Url cancel of PayPal",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pay project.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/projects/{id}/success": {
+            "get": {
+                "tags": [
+                    "Profile Projects"
+                ],
+                "summary": "Complete pay",
+                "description": "Complete pay of project with PayPal",
+                "operationId": "successProfileProject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID project",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "description": "Token of order of PayPal",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pay with PayPal complete.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/proposals": {
+            "get": {
+                "tags": [
+                    "Profile Proposals"
                 ],
                 "summary": "Get proposals",
                 "description": "Returns all proposals",
-                "operationId": "indexProposal",
+                "operationId": "indexProfileProposal",
                 "responses": {
                     "200": {
                         "description": "Show all proposals.",
@@ -1667,14 +2351,14 @@
                 ]
             }
         },
-        "/api/v1/proposals/{id}": {
+        "/api/v1/profile/proposals/{id}": {
             "get": {
                 "tags": [
-                    "Proposals"
+                    "Profile Proposals"
                 ],
                 "summary": "Get proposal",
                 "description": "Returns a single proposal",
-                "operationId": "showProposal",
+                "operationId": "showProfileProposal",
                 "parameters": [
                     {
                         "name": "id",
@@ -1708,11 +2392,11 @@
             },
             "put": {
                 "tags": [
-                    "Proposals"
+                    "Profile Proposals"
                 ],
                 "summary": "Update proposal",
                 "description": "Update a single proposal",
-                "operationId": "updateProposal",
+                "operationId": "updateProfileProposal",
                 "parameters": [
                     {
                         "name": "id",
@@ -1791,11 +2475,11 @@
             },
             "post": {
                 "tags": [
-                    "Proposals"
+                    "Profile Proposals"
                 ],
                 "summary": "Register proposal",
                 "description": "Create a new proposal",
-                "operationId": "storeProposal",
+                "operationId": "storeProfileProposal",
                 "parameters": [
                     {
                         "name": "id",
@@ -1865,6 +2549,9 @@
                     "401": {
                         "description": "Not authenticated."
                     },
+                    "403": {
+                        "description": "Forbidden."
+                    },
                     "422": {
                         "description": "Data not valid."
                     },
@@ -1879,14 +2566,14 @@
                 ]
             }
         },
-        "/api/v1/proposals/{id}/cancel": {
+        "/api/v1/profile/proposals/{id}/cancel": {
             "put": {
                 "tags": [
-                    "Proposals"
+                    "Profile Proposals"
                 ],
                 "summary": "Cancel proposal",
                 "description": "Cancel a single proposal",
-                "operationId": "cancelProposal",
+                "operationId": "cancelProfileProposal",
                 "parameters": [
                     {
                         "name": "id",
@@ -1925,14 +2612,14 @@
                 ]
             }
         },
-        "/api/v1/proposals/{id}/accept": {
+        "/api/v1/profile/proposals/{id}/accept": {
             "put": {
                 "tags": [
-                    "Proposals"
+                    "Profile Proposals"
                 ],
                 "summary": "Accept proposal",
                 "description": "Accept a single proposal",
-                "operationId": "acceptProposal",
+                "operationId": "acceptProfileProposal",
                 "parameters": [
                     {
                         "name": "id",
@@ -2315,6 +3002,150 @@
                     },
                     "500": {
                         "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/projects": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Get projects",
+                "description": "Returns all projects",
+                "operationId": "indexProject",
+                "responses": {
+                    "200": {
+                        "description": "Show all projects.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/projects/{id}": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Get project",
+                "description": "Returns a single project",
+                "operationId": "showProject",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show project.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/proposals": {
+            "get": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Get proposals",
+                "description": "Returns all proposals",
+                "operationId": "indexProposal",
+                "responses": {
+                    "200": {
+                        "description": "Show all proposals.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/proposals/{id}": {
+            "get": {
+                "tags": [
+                    "Proposals"
+                ],
+                "summary": "Get proposal",
+                "description": "Returns a single proposal",
+                "operationId": "showProposal",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show proposal.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
                     }
                 },
                 "security": [
@@ -2983,12 +3814,20 @@
             "description": "User profile endpoints"
         },
         {
+            "name": "Wallet",
+            "description": "Wallet endpoints"
+        },
+        {
             "name": "Freelancer Profile",
             "description": "User freelancer profile endpoints"
         },
         {
             "name": "Profile Publications",
             "description": "User freelancer publications endpoints"
+        },
+        {
+            "name": "Profile Payments",
+            "description": "User profile payments endpoints"
         },
         {
             "name": "Profile Chats",
@@ -2999,8 +3838,12 @@
             "description": "User favorites publications endpoints"
         },
         {
-            "name": "Proposals",
-            "description": "Proposals endpoints"
+            "name": "Profile Proposals",
+            "description": "User profile Proposals endpoints"
+        },
+        {
+            "name": "Profile Projects",
+            "description": "User profile projects endpoints"
         },
         {
             "name": "Countries",
@@ -3021,6 +3864,18 @@
         {
             "name": "Chats",
             "description": "Chats endpoints"
+        },
+        {
+            "name": "Proposals",
+            "description": "Proposals endpoints"
+        },
+        {
+            "name": "Projects",
+            "description": "Projects endpoints"
+        },
+        {
+            "name": "Payments",
+            "description": "Payments endpoints"
         },
         {
             "name": "Settings",

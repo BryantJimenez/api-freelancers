@@ -49,6 +49,11 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Wallet",
+*	description="Wallet endpoints"
+* )
+*
+* @OA\Tag(
 *	name="Freelancer Profile",
 *	description="User freelancer profile endpoints"
 * )
@@ -56,6 +61,11 @@ use Illuminate\Http\Request;
 * @OA\Tag(
 *	name="Profile Publications",
 *	description="User freelancer publications endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Profile Payments",
+*	description="User profile payments endpoints"
 * )
 *
 * @OA\Tag(
@@ -69,8 +79,13 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
-*	name="Proposals",
-*	description="Proposals endpoints"
+*	name="Profile Proposals",
+*	description="User profile Proposals endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Profile Projects",
+*	description="User profile projects endpoints"
 * )
 *
 * @OA\Tag(
@@ -99,6 +114,21 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Proposals",
+*	description="Proposals endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Projects",
+*	description="Projects endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Payments",
+*	description="Payments endpoints"
+* )
+*
+* @OA\Tag(
 *	name="Settings",
 *	description="Settings endpoints"
 * )
@@ -119,9 +149,9 @@ class ApiController extends Controller
 		$user->photo=(!is_null($user->photo)) ? $user->photo : '';
 		if ($freelancer) {
 			$user->freelancer=$this->dataFreelancer($user['freelancer'], $user['country']);
-			$data=$user->only("id", "name", "lastname", "slug", "photo", "username", "email", "state", "rol", "freelancer");
+			$data=$user->only("id", "name", "lastname", "slug", "photo", "username", "email", "state", "rol", "balance", "freelancer");
 		} else {
-			$data=$user->only("id", "name", "lastname", "slug", "photo", "username", "email", "state", "rol");
+			$data=$user->only("id", "name", "lastname", "slug", "photo", "username", "email", "state", "rol", "balance");
 		}
 		
 		return $data;
@@ -166,13 +196,16 @@ class ApiController extends Controller
 		return $data;
 	}
 
-	public function dataPublication($publication) {
+	public function dataPublication($publication, $categories=true) {
 		$publication->user=(!is_null($publication['freelancer'])) ? $this->dataUser($publication['freelancer']['user']) : [];
-		$publication->categories=$publication['categories']->map(function($category) {
-			return $category->only("id", "name", "slug");
-		});
-
-		$data=$publication->only("id", "name", "slug", "description", "content", "state", "user", "categories");
+		if ($categories) {
+			$publication->categories=$publication['categories']->map(function($category) {
+				return $category->only("id", "name", "slug");
+			});
+			$data=$publication->only("id", "name", "slug", "description", "content", "state", "user", "categories");
+		} else {
+			$data=$publication->only("id", "name", "slug", "description", "content", "state", "user");
+		}
 		
 		return $data;
 	}
@@ -188,8 +221,28 @@ class ApiController extends Controller
 		$proposal->end=(!is_null($proposal->end)) ? $proposal->end : '';
 		$proposal->owner=$this->dataUser($proposal['owner']);
 		$proposal->receiver=$this->dataUser($proposal['receiver']);
-		$proposal->publication=$this->dataPublication($proposal['chat_room']['publication']);
-		$data=$proposal->only("id", "amount", "start", "end", "content", "state", "owner", "receiver", "publication");
+		$proposal->publication=$this->dataPublication($proposal['chat_room']['publication'], false);
+		$data=$proposal->only("id", "start", "end", "amount", "content", "state", "owner", "receiver", "publication");
+		
+		return $data;
+	}
+
+	public function dataProject($project) {
+		$project->user=(!is_null($project['user'])) ? $this->dataUser($project['user']): [];
+		$project->employer=(!is_null($project['employer'])) ? $this->dataUser($project['employer']): [];
+		$project->payment=(!is_null($project['payment'])) ? $this->dataPayment($project['payment']): [];
+		$data=$project->only("id", "start", "end", "amount", "content", "state", "pay_state", "user", "employer", "payment");
+		
+		return $data;
+	}
+
+	public function dataPayment($payment, $user=true) {
+		if ($user) {
+			$payment->user=$this->dataUser($payment['user']);
+			$data=$payment->only("id", "subject", "total", "fee", "balance", "currency", "method", "type", "state", "user");
+		} else {
+			$data=$payment->only("id", "subject", "total", "fee", "balance", "currency", "method", "type", "state");
+		}
 		
 		return $data;
 	}

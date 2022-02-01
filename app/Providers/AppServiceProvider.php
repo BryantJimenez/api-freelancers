@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Laravel\Cashier\Cashier;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
         // $this->app->bind('path.public', function() {
         //     return base_path().'/public_html'; 
         // });
+        Cashier::ignoreMigrations();
     }
 
     /**

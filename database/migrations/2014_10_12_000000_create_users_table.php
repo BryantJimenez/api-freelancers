@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->float('balance', 10, 2)->default(0.00)->unsigned();
             $table->enum('state', [0, 1])->default(1);
             $table->rememberToken();
             $table->bigInteger('country_id')->unsigned()->nullable();

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\Profile;
 
+use App\Models\Project;
 use App\Models\Proposal;
+use App\Models\Chat\ChatRoom;
 use App\Models\Publication\Publication;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Api\Proposal\ApiProposalStoreRequest;
@@ -15,11 +17,11 @@ class ProposalController extends ApiController
     /**
     *
     * @OA\Get(
-    *   path="/api/v1/proposals",
-    *   tags={"Proposals"},
+    *   path="/api/v1/profile/proposals",
+    *   tags={"Profile Proposals"},
     *   summary="Get proposals",
     *   description="Returns all proposals",
-    *   operationId="indexProposal",
+    *   operationId="indexProfileProposal",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -46,11 +48,11 @@ class ProposalController extends ApiController
     /**
     *
     * @OA\Post(
-    *   path="/api/v1/proposals/{id}",
-    *   tags={"Proposals"},
+    *   path="/api/v1/profile/proposals/{id}",
+    *   tags={"Profile Proposals"},
     *   summary="Register proposal",
     *   description="Create a new proposal",
-    *   operationId="storeProposal",
+    *   operationId="storeProfileProposal",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -123,6 +125,10 @@ class ProposalController extends ApiController
     *       description="Not authenticated."
     *   ),
     *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
+    *   ),
+    *   @OA\Response(
     *       response=422,
     *       description="Data not valid."
     *   ),
@@ -133,11 +139,15 @@ class ProposalController extends ApiController
     * )
     */
  	public function store(ApiProposalStoreRequest $request, ChatRoom $chat) {
+        if ($chat['users']->where('id', request('receiver_id'))->count()==0) {
+            return response()->json(['code' => 403, 'status' => 'error', 'message' => 'The user who receives the proposal does not belong to the chat.'], 403);
+        }
+
  		$data=array('start' => request('start'), 'end' => request('end'), 'content' => request('content'), 'amount' => request('amount'), 'owner_id' => Auth::id(), 'receiver_id' => request('receiver_id'), 'chat_room_id' => $chat->id);
  		$proposal=Proposal::create($data);
 
  		if ($proposal) {
- 			$proposal=Proposal::with(['owner', 'receiver', 'chat_room.publication'])->where('id', $proposal->id)->first();
+ 			$proposal=Proposal::with(['owner', 'receiver', 'chat_room.publication.categories', 'chat_room.publication.freelancer.user'])->where('id', $proposal->id)->first();
  			$proposal=$this->dataProposal($proposal);
  			return response()->json(['code' => 201, 'status' => 'success', 'message' => 'The proposal has been successfully send.', 'data' => $proposal], 201);
  		}
@@ -148,11 +158,11 @@ class ProposalController extends ApiController
     /**
     *
     * @OA\Get(
-    *   path="/api/v1/proposals/{id}",
-    *   tags={"Proposals"},
+    *   path="/api/v1/profile/proposals/{id}",
+    *   tags={"Profile Proposals"},
     *   summary="Get proposal",
     *   description="Returns a single proposal",
-    *   operationId="showProposal",
+    *   operationId="showProfileProposal",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -194,11 +204,11 @@ class ProposalController extends ApiController
     /**
     *
     * @OA\Put(
-    *   path="/api/v1/proposals/{id}",
-    *   tags={"Proposals"},
+    *   path="/api/v1/profile/proposals/{id}",
+    *   tags={"Profile Proposals"},
     *   summary="Update proposal",
     *   description="Update a single proposal",
-    *   operationId="updateProposal",
+    *   operationId="updateProfileProposal",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -280,10 +290,18 @@ class ProposalController extends ApiController
             return response()->json(['code' => 403, 'status' => 'error', 'message' => 'This proposal does not belong to this user.'], 403);
         }
 
+        if ($proposal->state=='Accepted') {
+            return response()->json(['code' => 403, 'status' => 'error', 'message' => 'This proposal has already been accepted, you cannot edit it.'], 403);
+        }
+
+        if ($proposal->state=='Cancelled') {
+            return response()->json(['code' => 403, 'status' => 'error', 'message' => 'This proposal has already been cancelled, you cannot edit it.'], 403);
+        }
+
         $data=array('start' => request('start'), 'end' => request('end'), 'content' => request('content'), 'amount' => request('amount'));
         $proposal->fill($data)->save();
         if ($proposal) {
-            $proposal=Proposal::with(['owner', 'receiver', 'chat_room.publication'])->where('id', $proposal->id)->first();
+            $proposal=Proposal::with(['owner', 'receiver', 'chat_room.publication.categories', 'chat_room.publication.freelancer.user'])->where('id', $proposal->id)->first();
             $proposal=$this->dataProposal($proposal);
             return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The proposal has been edited successfully.', 'data' => $proposal], 200);
         }
@@ -294,11 +312,11 @@ class ProposalController extends ApiController
     /**
     *
     * @OA\Put(
-    *   path="/api/v1/proposals/{id}/cancel",
-    *   tags={"Proposals"},
+    *   path="/api/v1/profile/proposals/{id}/cancel",
+    *   tags={"Profile Proposals"},
     *   summary="Cancel proposal",
     *   description="Cancel a single proposal",
-    *   operationId="cancelProposal",
+    *   operationId="cancelProfileProposal",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -341,6 +359,14 @@ class ProposalController extends ApiController
             return response()->json(['code' => 403, 'status' => 'error', 'message' => 'This proposal does not belong to this user.'], 403);
         }
 
+        if ($proposal->state=='Cancelled') {
+            return response()->json(['code' => 200, 'status' => 'error', 'message' => 'This proposal has already been canceled.'], 200);
+        }
+
+        if ($proposal->state=='Accepted') {
+            return response()->json(['code' => 200, 'status' => 'error', 'message' => 'This proposal has already been accepted, you cannot cancel it.'], 200);
+        }
+
         $proposal->fill(['state' => "0"])->save();
         if ($proposal) {
             $proposal=$this->dataProposal($proposal);
@@ -353,11 +379,11 @@ class ProposalController extends ApiController
     /**
     *
     * @OA\Put(
-    *   path="/api/v1/proposals/{id}/accept",
-    *   tags={"Proposals"},
+    *   path="/api/v1/profile/proposals/{id}/accept",
+    *   tags={"Profile Proposals"},
     *   summary="Accept proposal",
     *   description="Accept a single proposal",
-    *   operationId="acceptProposal",
+    *   operationId="acceptProfileProposal",
     *   security={
     *       {"bearerAuth": {}}
     *   },
@@ -396,12 +422,24 @@ class ProposalController extends ApiController
     * )
      */
     public function accept(Request $request, Proposal $proposal) {
+        if ($proposal->state=='Cancelled') {
+            return response()->json(['code' => 200, 'status' => 'error', 'message' => 'This proposal has already been cancelled, you cannot accept it.'], 200);
+        }
+
+        if ($proposal->state=='Accepted') {
+            return response()->json(['code' => 200, 'status' => 'error', 'message' => 'This proposal has already been accepted.'], 200);
+        }
+
         if ($proposal->receiver_id!=Auth::id()) {
             return response()->json(['code' => 403, 'status' => 'error', 'message' => 'This proposal cannot be accepted by this user.'], 403);
         }
 
         $proposal->fill(['state' => "1"])->save();
         if ($proposal) {
+            $employer_id=($proposal['chat_room']['publication']['freelancer']['user']->id!=$proposal->receiver_id) ? $proposal->receiver_id: $proposal->owner_id;
+            $data=array('start' => date('Y-m-d'), 'end' => $proposal->end, 'amount' => $proposal->amount, 'content' => $proposal->content, 'user_id' => $proposal['chat_room']['publication']['freelancer']['user']->id, 'employer_id' => $employer_id, 'proposal_id' => $proposal->id);
+            Project::create($data);
+
             $proposal=$this->dataProposal($proposal);
             return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The proposal has been successfully accepted.', 'data' => $proposal], 200);
         }

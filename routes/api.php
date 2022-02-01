@@ -31,6 +31,15 @@ Route::group(['prefix' => 'v1'], function() {
 		});
 	});
 
+	//////////////////////////////////////// WEB ////////////////////////////////////////////////////
+	Route::group(['middleware' => 'auth:api'], function () {
+		// Wallet
+		Route::group(['prefix' => 'wallet'], function () {
+			Route::post('/', 'Api\Payment\WalletController@store');
+			Route::get('/success', 'Api\Payment\WalletController@success');
+		});
+	});
+
 	/////////////////////////////////////// ADMIN ////////////////////////////////////////////////////
 	Route::group(['middleware' => 'auth:api'], function () {
 		// Profile
@@ -48,7 +57,7 @@ Route::group(['prefix' => 'v1'], function() {
 				Route::put('/', 'Api\Profile\FreelancerController@update');
 				Route::delete('/', 'Api\Profile\FreelancerController@destroy');
 			});
-			// Publications
+			// Profile Publications
 			Route::prefix('publications')->group(function () {
 				Route::get('/', 'Api\Profile\PublicationController@index');
 				Route::post('/', 'Api\Profile\PublicationController@store');
@@ -57,6 +66,30 @@ Route::group(['prefix' => 'v1'], function() {
 				Route::delete('/{publication:id}', 'Api\Profile\PublicationController@destroy');
 				Route::put('/{publication:id}/activate', 'Api\Profile\PublicationController@activate');
 				Route::put('/{publication:id}/deactivate', 'Api\Profile\PublicationController@deactivate');
+			});
+			// Profile Proposals
+			Route::group(['prefix' => 'proposals'], function () {
+				Route::get('/', 'Api\Profile\ProposalController@index');
+				Route::post('/{chat:id}', 'Api\Profile\ProposalController@store');
+				Route::get('/{proposal:id}', 'Api\Profile\ProposalController@show');
+				Route::put('/{proposal:id}', 'Api\Profile\ProposalController@update');
+				Route::put('/{proposal:id}/accept', 'Api\Profile\ProposalController@accept');
+				Route::put('/{proposal:id}/cancel', 'Api\Profile\ProposalController@cancel');
+			});
+			// Profile Projects
+			Route::prefix('projects')->group(function () {
+				Route::get('/', 'Api\Profile\ProjectController@index');
+				Route::get('/{project:id}', 'Api\Profile\ProjectController@show');
+				Route::put('/{project:id}', 'Api\Profile\ProjectController@update');
+				Route::put('/{project:id}/finalize', 'Api\Profile\ProjectController@finalize');
+				Route::put('/{project:id}/cancel', 'Api\Profile\ProjectController@cancel');
+				Route::post('/{project:id}/pay', 'Api\Profile\ProjectController@pay');
+				Route::get('/{project:id}/success', 'Api\Profile\ProjectController@success');
+			});
+			// Profile Payments
+			Route::prefix('payments')->group(function () {
+				Route::get('/', 'Api\Profile\PaymentController@index');
+				Route::get('/{payment:id}', 'Api\Profile\PaymentController@show');
 			});
 		});
 
@@ -67,16 +100,6 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::delete('/{favorite:id}', 'Api\Profile\FavoriteController@destroy');
 		});
 
-		// Proposals
-		Route::group(['prefix' => 'proposals'], function () {
-			Route::get('/', 'Api\Profile\ProposalController@index');
-			Route::post('/{publication:id}', 'Api\Profile\ProposalController@store');
-			Route::get('/{proposal:id}', 'Api\Profile\ProposalController@show');
-			Route::put('/{proposal:id}', 'Api\Profile\ProposalController@update');
-			Route::put('/{proposal:id}/accept', 'Api\Profile\ProposalController@accept');
-			Route::put('/{proposal:id}/cancel', 'Api\Profile\ProposalController@cancel');
-		});
-
 		// Chats
 		Route::group(['prefix' => 'chats'], function () {
 			Route::get('/', 'Api\Profile\ChatController@index');
@@ -84,6 +107,9 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::get('/{chat:id}', 'Api\Profile\ChatController@show');
 			Route::get('/{chat:id}/messages', 'Api\Profile\ChatController@messages');
 			Route::post('/{chat:id}/message', 'Api\Profile\ChatController@message');
+			Route::get('/{chat:id}/read', 'Api\Profile\ChatController@read');
+			Route::put('/{chat:id}/activate', 'Api\ChatController@activate')->middleware('permission:chats.active');
+			Route::put('/{chat:id}/deactivate', 'Api\ChatController@deactivate')->middleware('permission:chats.deactive');
 		});
 
 		// Users
@@ -126,10 +152,22 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::delete('/{publication:id}', 'Api\PublicationController@destroy')->middleware('permission:publications.delete');
 		});
 
-		// Chats
-		Route::group(['prefix' => 'chats'], function () {
-			Route::put('/{chat:id}/activate', 'Api\ChatController@activate')->middleware('permission:chats.active');
-			Route::put('/{chat:id}/deactivate', 'Api\ChatController@deactivate')->middleware('permission:chats.deactive');
+		// Proposals
+		Route::group(['prefix' => 'proposals'], function () {
+			Route::get('/', 'Api\ProposalController@index')->middleware('permission:proposals.index');
+			Route::get('/{proposal:id}', 'Api\ProposalController@show')->middleware('permission:proposals.show');
+		});
+
+		// Projects
+		Route::group(['prefix' => 'projects'], function () {
+			Route::get('/', 'Api\ProjectController@index')->middleware('permission:projects.index');
+			Route::get('/{project:id}', 'Api\ProjectController@show')->middleware('permission:projects.show');
+		});
+
+		// Payments
+		Route::group(['prefix' => 'payments'], function () {
+			Route::get('/', 'Api\Payment\PaymentController@index')->middleware('permission:payments.index');
+			Route::get('/{payment:id}', 'Api\Payment\PaymentController@show')->middleware('permission:payments.show');
 		});
 
 		// Settings
@@ -137,21 +175,5 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::get('/', 'Api\SettingController@get')->middleware('permission:settings.index');
 			Route::put('/', 'Api\SettingController@update')->middleware('permission:settings.edit');
 		});
-
-
-
-
-
-
-
-		// Payments
-		Route::group(['prefix' => 'payments'], function () {
-			Route::get('/', 'Api\SettingController@payment');
-		});
-	});
-
-	// Payments
-	Route::group(['prefix' => 'payments'], function () {
-		Route::get('/success', 'Api\SettingController@success');
 	});
 });

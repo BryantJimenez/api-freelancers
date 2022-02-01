@@ -9,6 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Spatie\Permission\Exceptions\UnauthorizedException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -64,6 +65,10 @@ class Handler extends ExceptionHandler
                 return response()->json(['code' => 404, 'status' => 'error', 'message' => 'No results found.'], 404);
             }
 
+            if ($exception instanceof ModelNotFoundException) {
+                return response()->json(['code' => 404, 'status' => 'error', 'message' => 'No model found.'], 404);
+            }
+
             if ($exception instanceof AuthenticationException) {
                 return response()->json(['code' => 401, 'status' => 'error', 'message' => 'Not authenticated.'], 401);
             }
@@ -84,6 +89,10 @@ class Handler extends ExceptionHandler
 
             if ($exception instanceof NotFoundHttpException) {
                 return response()->json(['code' => 404, 'status' => false, 'message' => 'No results found.'], 404);
+            }
+
+            if ($exception instanceof ModelNotFoundException) {
+                return response()->json(['code' => 404, 'status' => 'error', 'message' => 'No model found.'], 404);
             }
 
             if ($exception instanceof AuthenticationException) {

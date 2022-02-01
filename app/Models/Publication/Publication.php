@@ -4,7 +4,6 @@ namespace App\Models\Publication;
 
 use App\Models\Favorite;
 use App\Models\Category;
-use App\Models\Proposal;
 use App\Models\Freelancer\Freelancer;
 use App\Models\Chat\ChatRoom;
 use Illuminate\Database\Eloquent\Model;

@@ -81,6 +81,10 @@ class ChatController extends ApiController
     *       description="Not authenticated."
     *   ),
     *   @OA\Response(
+    *       response=403,
+    *       description="Forbidden."
+    *   ),
+    *   @OA\Response(
     *       response=422,
     *       description="Data not valid."
     *   ),
@@ -92,13 +96,13 @@ class ChatController extends ApiController
     */
     public function store(Request $request, Publication $publication) {
         if ($publication['freelancer']['user']->id==Auth::id()) {
-            return response()->json(['code' => 500, 'status' => 'warning', 'message' => 'This publication belongs to this user.'], 500);
+            return response()->json(['code' => 403, 'status' => 'error', 'message' => 'This publication belongs to this user.'], 403);
         }
 
         $data=array('name' => $publication->name, 'publication_id' => $publication->id);
         $chat=ChatRoom::create($data);
         if ($chat) {
-            RoomUser::create(['user_id' => $publication['freelancer']['user']->id,'chat_room_id' => $chat->id]);
+            RoomUser::create(['user_id' => $publication['freelancer']['user']->id, 'chat_room_id' => $chat->id]);
             RoomUser::create(['user_id' => Auth::id(), 'chat_room_id' => $chat->id]);
 
             $chat=ChatRoom::with(['publication', 'users', 'messages'])->where('id', $chat->id)->first();
@@ -141,10 +145,6 @@ class ChatController extends ApiController
     *       description="Not authenticated."
     *   ),
     *   @OA\Response(
-    *       response=403,
-    *       description="Forbidden."
-    *   ),
-    *   @OA\Response(
     *       response=404,
     *       description="No results found."
     *   )
@@ -185,10 +185,6 @@ class ChatController extends ApiController
     *   @OA\Response(
     *       response=401,
     *       description="Not authenticated."
-    *   ),
-    *   @OA\Response(
-    *       response=403,
-    *       description="Forbidden."
     *   ),
     *   @OA\Response(
     *       response=404,
@@ -249,10 +245,6 @@ class ChatController extends ApiController
     *       description="Not authenticated."
     *   ),
     *   @OA\Response(
-    *       response=403,
-    *       description="Forbidden."
-    *   ),
-    *   @OA\Response(
     *       response=422,
     *       description="Data not valid."
     *   ),
@@ -272,5 +264,53 @@ class ChatController extends ApiController
         }
 
         return response()->json(['code' => 500, 'status' => 'error', 'message' => 'An error occurred during the process, please try again.'], 500);
+    }
+
+    /**
+    *
+    * @OA\Get(
+    *   path="/api/v1/chats/{id}/read",
+    *   tags={"Profile Chats"},
+    *   summary="Read chat messages",
+    *   description="Read messages of a single chat",
+    *   operationId="readChatMessage",
+    *   security={
+    *       {"bearerAuth": {}}
+    *   },
+    *   @OA\Parameter(
+    *       name="id",
+    *       in="path",
+    *       description="Search for ID",
+    *       required=true,
+    *       @OA\Schema(
+    *           type="integer"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=200,
+    *       description="Read chat messages.",
+    *       @OA\MediaType(
+    *           mediaType="application/json"
+    *       )
+    *   ),
+    *   @OA\Response(
+    *       response=401,
+    *       description="Not authenticated."
+    *   ),
+    *   @OA\Response(
+    *       response=404,
+    *       description="No results found."
+    *   )
+    * )
+    */
+    public function read(ChatRoom $chat) {
+        $count=ChatMessage::where([['read', '0'], ['user_id', '!=', Auth::id()], ['chat_room_id', $chat->id]])->count();
+        if ($count>0) {
+            $read=ChatMessage::where([['read', '0'], ['user_id', '!=', Auth::id()], ['chat_room_id', $chat->id]])->update(['read' => '1']);
+            if ($read) {
+                return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The messages have been read successfully.'], 200);
+            }
+        }
+        return response()->json(['code' => 200, 'status' => 'success', 'message' => 'There are no new messages.'], 200);
     }
 }
