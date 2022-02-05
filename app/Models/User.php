@@ -6,6 +6,7 @@ use App\Models\Freelancer\Freelancer;
 use App\Models\Chat\ChatRoom;
 use App\Models\Chat\ChatMessage;
 use App\Models\Payment\Payment;
+use App\Models\Retreat\Retreat;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -98,6 +99,10 @@ class User extends Authenticatable
         return $this->belongsTo(Country::class);
     }
 
+    public function retreat_option() {
+        return $this->hasOne(OptionRetreat::class);
+    }
+
     public function freelancer() {
         return $this->hasOne(Freelancer::class);
     }
@@ -132,5 +137,9 @@ class User extends Authenticatable
 
     public function commissioned_projects() {
         return $this->hasMany(Project::class, 'employer_id');
+    }
+
+    public function retreats() {
+        return $this->hasMany(Retreat::class);
     }
 }

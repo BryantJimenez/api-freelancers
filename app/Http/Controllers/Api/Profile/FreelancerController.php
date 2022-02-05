@@ -179,6 +179,8 @@ class FreelancerController extends ApiController
         $freelancer->fill($data)->save();
 
         if ($user && $freelancer) {
+            Auth::user()->country_id=request('country_id');
+
             // Delete languages of freelancer
             FreelancerLanguage::where('freelancer_id', $freelancer->id)->delete();
 

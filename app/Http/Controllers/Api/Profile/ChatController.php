@@ -12,6 +12,7 @@ use App\Http\Requests\Api\Message\ApiMessageStoreRequest;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Events\ChatEvent;
 use Auth;
 use Arr;
 
@@ -258,6 +259,9 @@ class ChatController extends ApiController
         $message=ChatMessage::create(['message' => request('message'), 'user_id' => Auth::id(), 'chat_room_id' => $chat->id]);
 
         if ($message) {
+            $to=$chat['users']->where('user_id', '!=', Auth::id())->first();
+            broadcast(new ChatEvent(request('message'), $to->id, $chat->id))->toOthers();
+
             $message=ChatMessage::where('id', $message->id)->first();
             $message=$this->dataMessage($message);
             return response()->json(['code' => 201, 'status' => 'success', 'message' => 'The message has been successfully created.', 'data' => $message], 201);

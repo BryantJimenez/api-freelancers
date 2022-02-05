@@ -479,6 +479,9 @@ class ProjectController extends ApiController
                     if ($project) {
                         $balance=$user->balance-$project->amount;
                         $user->fill(['balance' => $balance])->save();
+                        if ($user) {
+                            Auth::user()->balance=$balance;
+                        }
 
                         return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The project has been successfully pay.'], 200);
                     }

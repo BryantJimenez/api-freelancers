@@ -198,10 +198,77 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Recovery password email send.",
+                        "description": "Recovery password.",
                         "content": {
                             "application/json": {}
                         }
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/password/reset": {
+            "post": {
+                "tags": [
+                    "Reset Password"
+                ],
+                "summary": "Reset password user",
+                "operationId": "resetPassword",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "query",
+                        "description": "Token for forgot password",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Email of user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "description": "Password of user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password_confirmation",
+                        "in": "query",
+                        "description": "Password confirm of user",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reset password.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
                     },
                     "422": {
                         "description": "Data not valid."
@@ -1684,6 +1751,73 @@
                 ]
             }
         },
+        "/api/v1/profile/retreat-options": {
+            "get": {
+                "tags": [
+                    "Profile Retreat Options"
+                ],
+                "summary": "Get profile retreat options",
+                "description": "Returns profile retreat options data",
+                "operationId": "getProfileRetreatOption",
+                "responses": {
+                    "200": {
+                        "description": "Get profile retreat options.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Profile Retreat Options"
+                ],
+                "summary": "Update retreat options user",
+                "description": "Update a retreat options data",
+                "operationId": "updateProfileRetreatOption",
+                "parameters": [
+                    {
+                        "name": "paypal_email",
+                        "in": "query",
+                        "description": "PayPal email of user",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update profile retreat options.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/profile/payments": {
             "get": {
                 "tags": [
@@ -3011,6 +3145,175 @@
                 ]
             }
         },
+        "/api/v1/profile/retreats": {
+            "get": {
+                "tags": [
+                    "Profile Retreats"
+                ],
+                "summary": "Get retreats",
+                "description": "Returns all retreats",
+                "operationId": "indexProfileRetreat",
+                "responses": {
+                    "200": {
+                        "description": "Show all retreats.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Profile Retreats"
+                ],
+                "summary": "Register retreat",
+                "description": "Create a new retreat",
+                "operationId": "storeProfileRetreat",
+                "parameters": [
+                    {
+                        "name": "method",
+                        "in": "query",
+                        "description": "Method of payment (1=PayPal)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "1"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "amount",
+                        "in": "query",
+                        "description": "Amount of retreat",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "double"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Registered retreat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/retreats/{id}": {
+            "get": {
+                "tags": [
+                    "Profile Retreats"
+                ],
+                "summary": "Get retreat",
+                "description": "Returns a single retreat",
+                "operationId": "showProfileRetreat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID retreat",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show retreat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/profile/retreats/{id}/cancel": {
+            "put": {
+                "tags": [
+                    "Profile Retreats"
+                ],
+                "summary": "Cancel retreat",
+                "description": "Cancel a single retreat",
+                "operationId": "cancelProfileRetreat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID retreat",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cancel retreat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/projects": {
             "get": {
                 "tags": [
@@ -3269,6 +3572,456 @@
                         "bearerAuth": []
                     }
                 ]
+            }
+        },
+        "/api/v1/retreats": {
+            "get": {
+                "tags": [
+                    "Retreats"
+                ],
+                "summary": "Get retreats",
+                "description": "Returns all retreats",
+                "operationId": "indexRetreat",
+                "responses": {
+                    "200": {
+                        "description": "Show all retreats.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/retreats/{id}": {
+            "get": {
+                "tags": [
+                    "Retreats"
+                ],
+                "summary": "Get retreat",
+                "description": "Returns a single retreat",
+                "operationId": "showRetreat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show retreat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/retreats/{id}/cancel": {
+            "put": {
+                "tags": [
+                    "Retreats"
+                ],
+                "summary": "Cancel retreat",
+                "description": "Cancel a single retreat",
+                "operationId": "cancelRetreat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID retreat",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cancel retreat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/retreats/{id}/accept": {
+            "put": {
+                "tags": [
+                    "Retreats"
+                ],
+                "summary": "Accept retreat",
+                "description": "Accept a single retreat",
+                "operationId": "acceptRetreat",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID retreat",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Accept retreat.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ignored-words": {
+            "get": {
+                "tags": [
+                    "Ignored Words"
+                ],
+                "summary": "Get ignored words",
+                "description": "Returns all ignored words",
+                "operationId": "indexIgnoredWord",
+                "responses": {
+                    "200": {
+                        "description": "Show all ignored words.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Ignored Words"
+                ],
+                "summary": "Register ignored word",
+                "description": "Create a new ignored word",
+                "operationId": "storeIgnoredWord",
+                "parameters": [
+                    {
+                        "name": "words",
+                        "in": "query",
+                        "description": "Ignored words",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registered word.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ignored-words/{id}": {
+            "get": {
+                "tags": [
+                    "Ignored Words"
+                ],
+                "summary": "Get ignored word",
+                "description": "Returns a single ignored word",
+                "operationId": "showIgnoredWord",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show word.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Ignored Words"
+                ],
+                "summary": "Update ignored word",
+                "description": "Update a single ignored word",
+                "operationId": "updateIgnoredWord",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "words",
+                        "in": "query",
+                        "description": "Ignored words",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Registered word.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Ignored Words"
+                ],
+                "summary": "Delete ignored word",
+                "description": "Delete a single ignored word",
+                "operationId": "destroyIgnoredWord",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete word.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "404": {
+                        "description": "No results found."
+                    },
+                    "500": {
+                        "description": "An error occurred during the process."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/search": {
+            "post": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Search publications",
+                "description": "Search publications",
+                "operationId": "getSearch",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Text for search publication",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search publications.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    }
+                }
+            }
+        },
+        "/api/v1/search/category/{id}": {
+            "post": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Search publications",
+                "description": "Search publications for category",
+                "operationId": "getSearchCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Search for ID of category",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Text for search publication",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search publications for category.",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "422": {
+                        "description": "Data not valid."
+                    }
+                }
             }
         },
         "/api/v1/settings": {
@@ -3806,6 +4559,10 @@
             "description": "Forgot password users endpoint"
         },
         {
+            "name": "Reset Password",
+            "description": "Reset password users endpoint"
+        },
+        {
             "name": "Users",
             "description": "Users endpoints"
         },
@@ -3818,6 +4575,10 @@
             "description": "Wallet endpoints"
         },
         {
+            "name": "Profile Retreat Options",
+            "description": "User profile retreat options endpoints"
+        },
+        {
             "name": "Freelancer Profile",
             "description": "User freelancer profile endpoints"
         },
@@ -3828,6 +4589,10 @@
         {
             "name": "Profile Payments",
             "description": "User profile payments endpoints"
+        },
+        {
+            "name": "Profile Retreats",
+            "description": "User profile retreats endpoints"
         },
         {
             "name": "Profile Chats",
@@ -3844,6 +4609,10 @@
         {
             "name": "Profile Projects",
             "description": "User profile projects endpoints"
+        },
+        {
+            "name": "Search",
+            "description": "Search endpoints"
         },
         {
             "name": "Countries",
@@ -3876,6 +4645,14 @@
         {
             "name": "Payments",
             "description": "Payments endpoints"
+        },
+        {
+            "name": "Retreats",
+            "description": "Retreats endpoints"
+        },
+        {
+            "name": "Ignored Words",
+            "description": "Ignored words endpoints"
         },
         {
             "name": "Settings",

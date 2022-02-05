@@ -62,6 +62,19 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'payments.index']);
         Permission::create(['name' => 'payments.show']);
 
+        // Retreat Permissions
+        Permission::create(['name' => 'retreats.index']);
+        Permission::create(['name' => 'retreats.show']);
+        Permission::create(['name' => 'retreats.accept']);
+        Permission::create(['name' => 'retreats.cancel']);
+
+        // Ignored Word Permissions
+        Permission::create(['name' => 'ignored-words.index']);
+        Permission::create(['name' => 'ignored-words.create']);
+        Permission::create(['name' => 'ignored-words.show']);
+        Permission::create(['name' => 'ignored-words.edit']);
+        Permission::create(['name' => 'ignored-words.delete']);
+
         // Setting Permissions
         Permission::create(['name' => 'settings.index']);
         Permission::create(['name' => 'settings.edit']);

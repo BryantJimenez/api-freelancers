@@ -1,13 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\Profile;
+namespace App\Http\Requests\Api\IgnoredWord;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Auth;
 
-class ApiProfileEmailUpdateRequest extends FormRequest
+class ApiIgnoredWordStoreRequest extends FormRequest
 {
   /**
    * Determine if the user is authorized to make this request.
@@ -27,8 +24,7 @@ class ApiProfileEmailUpdateRequest extends FormRequest
   public function rules()
   {
     return [
-      'current_email' => 'required|string|email|min:5|max:191',
-      'new_email' => 'required|string|email|min:5|max:191|unique:users,email,'.Auth::user()->id,
+      'words' => 'required|string|min:2|max:191|unique:ignored_words,words'
     ];
   }
 }

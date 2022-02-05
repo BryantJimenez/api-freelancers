@@ -39,6 +39,11 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Reset Password",
+*	description="Reset password users endpoint"
+* )
+*
+* @OA\Tag(
 *	name="Users",
 *	description="Users endpoints"
 * )
@@ -54,6 +59,11 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Profile Retreat Options",
+*	description="User profile retreat options endpoints"
+* )
+*
+* @OA\Tag(
 *	name="Freelancer Profile",
 *	description="User freelancer profile endpoints"
 * )
@@ -66,6 +76,11 @@ use Illuminate\Http\Request;
 * @OA\Tag(
 *	name="Profile Payments",
 *	description="User profile payments endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Profile Retreats",
+*	description="User profile retreats endpoints"
 * )
 *
 * @OA\Tag(
@@ -86,6 +101,11 @@ use Illuminate\Http\Request;
 * @OA\Tag(
 *	name="Profile Projects",
 *	description="User profile projects endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Search",
+*	description="Search endpoints"
 * )
 *
 * @OA\Tag(
@@ -129,6 +149,16 @@ use Illuminate\Http\Request;
 * )
 *
 * @OA\Tag(
+*	name="Retreats",
+*	description="Retreats endpoints"
+* )
+*
+* @OA\Tag(
+*	name="Ignored Words",
+*	description="Ignored words endpoints"
+* )
+*
+* @OA\Tag(
 *	name="Settings",
 *	description="Settings endpoints"
 * )
@@ -154,6 +184,12 @@ class ApiController extends Controller
 			$data=$user->only("id", "name", "lastname", "slug", "photo", "username", "email", "state", "rol", "balance");
 		}
 		
+		return $data;
+	}
+
+	public function dataRetreatOption($retreat_option) {
+		$retreat_option->paypal_email=(!is_null($retreat_option->paypal_email)) ? $retreat_option->paypal_email : '';
+		$data=$retreat_option->only("id", "paypal_email");
 		return $data;
 	}
 
@@ -244,6 +280,13 @@ class ApiController extends Controller
 			$data=$payment->only("id", "subject", "total", "fee", "balance", "currency", "method", "type", "state");
 		}
 		
+		return $data;
+	}
+
+	public function dataRetreat($retreat) {
+		$retreat->info=array('email' => $retreat['paypal']->email);
+		$retreat->user=$this->dataUser($retreat['user']);
+		$data=$retreat->only("id", "subject", "amount", "currency", "method", "state", "info", "user");
 		return $data;
 	}
 

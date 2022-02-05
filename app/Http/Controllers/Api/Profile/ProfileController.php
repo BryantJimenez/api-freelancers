@@ -108,9 +108,13 @@ class ProfileController extends ApiController
     	$user->fill($data)->save();
 
     	if ($user) {
+            Auth::user()->name=request('name');
+            Auth::user()->lastname=request('lastname');
     		if (!is_null(request('photo'))) {
     			$user->fill(['photo' => request('photo')])->save();
+                Auth::user()->photo=request('photo');
     		}
+
             $user=User::with(['roles'])->where('id', $user->id)->first();
             $user=$this->dataUser($user);
 
@@ -250,6 +254,7 @@ class ProfileController extends ApiController
         $user->fill(['email' => request('new_email')])->save();
 
         if ($user) {
+            Auth::user()->email=request('email');
             return response()->json(['code' => 200, 'status' => 'success', 'message' => 'Email changed successfully.'], 200);
         }
 

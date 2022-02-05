@@ -113,6 +113,9 @@ class WalletController extends ApiController
                     $user=User::where('id', Auth::id())->first();
                     $balance=$user->balance+number_format(request('amount'), 2, '.', '');
                     $user->fill(['balance' => $balance])->save();
+                    if ($user) {
+                        Auth::user()->balance=$balance;
+                    }
 
                     return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The payment has been successfully completed.'], 200);
                 }
@@ -196,6 +199,9 @@ class WalletController extends ApiController
                     $user=User::where('id', Auth::id())->first();
                     $balance=$user->balance+$order['data']['amount']['gross_amount']['value'];
                     $user->fill(['balance' => $balance])->save();
+                    if ($user) {
+                        Auth::user()->balance=$balance;
+                    }
 
                     return response()->json(['code' => 200, 'status' => 'success', 'message' => 'The payment has been successfully completed.'], 200);
                 }

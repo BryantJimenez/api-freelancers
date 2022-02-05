@@ -360,7 +360,7 @@ class ProposalController extends ApiController
         }
 
         if ($proposal->state=='Cancelled') {
-            return response()->json(['code' => 200, 'status' => 'error', 'message' => 'This proposal has already been canceled.'], 200);
+            return response()->json(['code' => 200, 'status' => 'error', 'message' => 'This proposal has already been cancelled.'], 200);
         }
 
         if ($proposal->state=='Accepted') {

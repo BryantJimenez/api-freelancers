@@ -24,14 +24,22 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::post('/', 'Api\AuthController@login');
 		});
 		Route::post('/register', 'Api\AuthController@register');
-		Route::post('/password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-
+		Route::prefix('password')->group(function () {
+			Route::post('/email', 'Api\AuthController@recovery');
+			Route::post('/reset', 'Api\AuthController@reset');
+		});
 		Route::group(['middleware' => 'auth:api'], function() {
 			Route::get('/logout', 'Api\AuthController@logout');
 		});
 	});
 
 	//////////////////////////////////////// WEB ////////////////////////////////////////////////////
+	// Search
+	Route::group(['prefix' => 'search'], function () {
+		Route::post('/', 'Api\Search\SearchController@search');
+		Route::post('/category/{category:id}', 'Api\Search\SearchController@searchCategory');
+	});
+
 	Route::group(['middleware' => 'auth:api'], function () {
 		// Wallet
 		Route::group(['prefix' => 'wallet'], function () {
@@ -49,6 +57,11 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::prefix('change')->group(function () {
 				Route::post('/password', 'Api\Profile\ProfileController@changePassword');
 				Route::post('/email', 'Api\Profile\ProfileController@changeEmail');
+			});
+			// Profile Options Retreat
+			Route::prefix('retreat-options')->group(function () {
+				Route::get('/', 'Api\Profile\OptionRetreatController@get');
+				Route::put('/', 'Api\Profile\OptionRetreatController@update');
 			});
 			// Freelancer Profile
 			Route::post('/upgrade', 'Api\Profile\FreelancerController@upgrade');
@@ -90,6 +103,13 @@ Route::group(['prefix' => 'v1'], function() {
 			Route::prefix('payments')->group(function () {
 				Route::get('/', 'Api\Profile\PaymentController@index');
 				Route::get('/{payment:id}', 'Api\Profile\PaymentController@show');
+			});
+			// Profile Retreats
+			Route::group(['prefix' => 'retreats'], function () {
+				Route::get('/', 'Api\Profile\RetreatController@index');
+				Route::post('/', 'Api\Profile\RetreatController@store');
+				Route::get('/{retreat:id}', 'Api\Profile\RetreatController@show');
+				Route::put('/{retreat:id}/cancel', 'Api\Profile\RetreatController@cancel');
 			});
 		});
 
@@ -168,6 +188,23 @@ Route::group(['prefix' => 'v1'], function() {
 		Route::group(['prefix' => 'payments'], function () {
 			Route::get('/', 'Api\Payment\PaymentController@index')->middleware('permission:payments.index');
 			Route::get('/{payment:id}', 'Api\Payment\PaymentController@show')->middleware('permission:payments.show');
+		});
+
+		// Retreats
+		Route::group(['prefix' => 'retreats'], function () {
+			Route::get('/', 'Api\RetreatController@index')->middleware('permission:retreats.index');
+			Route::get('/{retreat:id}', 'Api\RetreatController@show')->middleware('permission:retreats.show');
+			Route::put('/{retreat:id}/accept', 'Api\RetreatController@accept')->middleware('permission:retreats.accept');
+			Route::put('/{retreat:id}/cancel', 'Api\RetreatController@cancel')->middleware('permission:retreats.cancel');
+		});
+
+		// Ignored Words
+		Route::group(['prefix' => 'ignored-words'], function () {
+			Route::get('/', 'Api\Search\IgnoredWordController@index')->middleware('permission:ignored-words.index');
+			Route::post('/', 'Api\Search\IgnoredWordController@store')->middleware('permission:ignored-words.create');
+			Route::get('/{word:id}', 'Api\Search\IgnoredWordController@show')->middleware('permission:ignored-words.show');
+			Route::put('/{word:id}', 'Api\Search\IgnoredWordController@update')->middleware('permission:ignored-words.edit');
+			Route::delete('/{word:id}', 'Api\Search\IgnoredWordController@destroy')->middleware('permission:ignored-words.delete');
 		});
 
 		// Settings
